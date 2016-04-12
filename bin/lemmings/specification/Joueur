@@ -1,0 +1,38 @@
+Service : Joueur
+use : GameEng
+types : ClasseType{ TOMBEUR, MARCHEUR,GRIMPEUR,CREUSEUR }
+
+Observators :
+	gameEng : [Joueur] --> GameEng
+	nbJetons : [Joueur] --> int
+	jetons : [Joueur] * ClasseType --> int
+	const classeTypes : [Joueur] -> set<ClasseType, int>
+	
+Constructors :
+ 	init : GameEng * int --> Joueur
+ 	
+ 	
+Operators:
+	assignerClasse : [Joueur] * ClasseType * Lemming --> Joueur
+		pre: assignerClasse(J, c, l) require jetons(J, c) > 0
+	reset : [Joueur] --> Joueur
+	
+Observations:
+	[invariants]
+	
+	[init]
+		gameEng(init(G, n)) = G
+		nbJetons(init(G, n)) = n
+		jetons(init(G, n), c) = n
+		classeTypes(init(G, n)) = {<MARCHEUR,n>,<GRIMPEUR,n>,...}
+		
+	
+	[assignerClasse]
+		gameEng(assignerClasse(J, c, l)) = gameEng(J)
+		jetons(assignerClasse(J, c, l), c) = jetons(J,c) -1
+		jetons(assignerClasse(J, c1, l), c2) = jetons(J,c2)
+	
+	[reset]
+		gameEng(reset(J)) = gameEng(init(G, nbJetons(J)))
+		nbJetons(reset(J)) = nbJetons(J)
+		jetons(reset(J), c) = nbJetons(J)

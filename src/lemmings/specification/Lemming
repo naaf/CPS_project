@@ -1,0 +1,120 @@
+Service : Lemming
+use : GameEng
+types : Direction{GAUCHE, DROITE}, ClasseType{TOMBEUR, MARCHEUR,GRIMPEUR,CREUSEUR}
+
+Observators :
+	const gameEng	: [Lemming] --> GameEng
+	const id : [Lemming] -> int
+	x : [Lemming] -> int
+	y : [lemming] -> int
+	direction : [Lemming] -> Direction
+	classeType : [Lemming]  --> ClasseType
+	enChute : [Lemming] --> int
+	
+Constructors : 
+	init : GamingEng * int * int * int -> [GameEng]
+		pre : init(G, id, x, y) require 
+		  Level::caseExiste(GameEng::level(G), x,y)
+		^ Level::nature(GameEng::level(G), x, y) = EMPTY
+		^ Level::nature(GameEng::level(G), x, y -1) = EMPTY
+		
+
+Operators
+ 	step : [Lemming] -> Lemming
+	setClasseLemming : [Lemming] * ClasseType -> Lemming
+	switchDirection : [Lemming] -> Lemming
+	
+Observations :
+	[Invariant]
+		Level::nature(GameEng::level(gameEng(L)), x, y -1) = EMPTY
+		
+	[init]
+		x(init(G,id, i,j)) = i
+		y(init(G,id, i,j)) = j
+		id(init(G,id, i,j)) = id
+		gameEng(init(G,id, i,j)) = G
+		classeType(init(G,id, i,j)) = MARCHEUR
+		direction(init(G,id, i,j)) = DROITE
+		
+	[setClasseLemming]
+		x(setType(L, T)) = x(L)
+		y(setType(L, T)) = y(L)
+		direction(setType(L, T)) = direction(L)
+		type(setType(L, T)) = T
+		
+	[switchDirection]
+		x(switchDirection(L)) = x(L)
+		y(switchDirection(L)) = y(L)
+		direction(setType(L)) = ¬ direction(L)
+		type(switchDirection(L)) = type(L)
+		
+	[step]
+		if classeType(L) = MARCHEUR then :
+			 if obstacle(L, x(L)+1,y(L)+1) || ( obstacle(L, x(L)+1, y(L)) && obstacle(x(L)+1,y(L)+2) ) then :
+				direction(step(L)) = ¬ direction(L)
+				x(step(L)) = x(L) -1
+				y(step(L)) = y(L)
+			else 
+				direction(step(L)) = direction(L)
+				x(step(L)) = x(L) +1
+				if obstacle(L, x(L)+1, y(L))  then :
+					y(step(L)) = y(L) +1
+				else
+					y(step(L)) = y(L)
+			if obstacle(L, x(L), y(L)-1)  then :
+				classeType(step(L)) = TOMBEUR
+			else
+				classeType(step(L)) = classeType(L)
+				
+		else if classeType(L) = TOMBEUR then :
+			x(step(L)) = x(L)
+			direction(step(L)) = direction(L)
+			if(obstacle(L, x(L), y(L)-1)) then :
+				y(step(L)) = y(L) 
+				classeType(step(L)) = MARCHEUR
+				if y(L) - y@pre_first >= 8 then :
+					L ∉ GameEng::lemmings(gameEng(L))
+			else
+				y(step(L)) = y(L) -1
+				classeType(step(L)) = classeType(L)
+				
+		else if classeType(L) = CREUSEUR then :
+			x(step(L)) = x(L)
+			direction(step(L)) = direction(L)
+			if Level::nature(GameEng::level(gameEng(L)), x(L), y(L)-1) = DIRTY
+				y(step(L)) = y(L) -1
+				classeType(step(L)) = classeType(L)
+			
+			else if Level::nature(GameEng::level(gameEng(L)), x(L), y(L)-1) = METAL then :
+				y(step(L)) = y(L)
+				classeType(step(L)) = MARCHEUR
+			else
+				y(step(L)) = y(L) 
+				classeType(step(L)) = TOMBEUR
+	
+		else if (classeType(L) = GRIMPEUR) then :
+			x(step(L)) = x(L)
+			if obstacle(L,x(L)+1,y(L)) && obstacle(L,x(L)+1,y(L)+1) &&
+				Level::nature(GameEng::level(gameEng(L)), x(L), y(L)+2) = EMPTY then :
+				direction(step(L)) = direction(L)
+				classeType(step(L)) = classeType(L)
+				y(step(L)) = y(L)+1
+			
+			else 
+				if obstacle(L,x(L),y(L) + 1) then :
+					classeType(step(L)) = TOMBEUR
+					direction(step(L)) = direction(L)
+					y(step(L)) = y(L)
+				else if obstacle(L,x(L)+1,y(L)) && ¬obstacle(L,x(L)+1,y(L)+1)
+					classeType(step(L)) = MARCHEUR
+					y(step(L)) = y(L)+1
+					x(step(L)) = x(L) +1
+				else
+					classeType(step(L)) = MARCHEUR
+					direction(step(L)) = ¬direction(L)
+					y(step(L)) = y(L) 
+				
+				
+				
+				
+				
