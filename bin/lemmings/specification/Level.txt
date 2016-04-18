@@ -73,8 +73,8 @@ Observations :
 		editing(setNature(L, x, y, Nat)) = true
 		
 		nature(setNature(L, x, y, Nat), x, y) = Nat
-		pour tout x != x1 || y != y1   
-			nature(setNature(L, x, y, Nat), x1, y1) = nature(L, x1, y1)  
+		∀ x1 ∈ {0 ... w -1}, ∀y1 ∈ {0 ... h -1}; x != x1 || y != y1   
+			nature(setNature(L, x, y, Nat), x1, y1) = nature(L, x1, y1)@pre  
         
         exitX(setNature(L, x, y, Nat)) = null
 		exitY(setNature(L, x, y, Nat)) = null
@@ -83,7 +83,8 @@ Observations :
                             
       [goPlay] 
       	editing(goPlay(L, eX, eY, qX, qY)) =  false
-      	nature(goPlay(L, eX, eY, qX, qY),x,y) = nature(L,x,y)	
+      	∀x ∈ {0 ... w -1}, ∀y ∈ {0 ... h -1}
+      	nature(goPlay(L, eX, eY, qX, qY),x,y) = nature(L,x,y)@pre	
 		entranceX(goPlay(L,eX, eY, qX, qY)) = eX 
 		entranceY(goPlay(L,eX, eY, qX, qY)) = eY  
 		exitX(goPlay(L, eX, eY, qX, qY))= qX 
@@ -91,18 +92,23 @@ Observations :
 
 	  [remove]
 		editing(remove(L, i, j)) =  false
-		if nature(L,i,j) = DIRTY then :
-			nature(remove(L,i,j)) = EMPTY
-		else
-			nature(remove(L,i,j)) =  nature(L,i,j)
+		nature(remove(L,i,j),i,j) = EMPTY
+		∀x ∈ {0 ... w -1}, ∀y ∈ {0 ... h -1}; x!=i || y!=j
+			nature(remove(L,i,j),x,y) = nature(L,x,y)@pre
+		exitX(remove(L, i, j)) = exitX(L)@pre
+		exitY(remove(L, i, j)) = exitY(L)@pre
+		entranceX(remove(L, i, j)) = entranceX(L)@pre
+		entranceY(remove(L, i, j)) = entranceY(L)@pre
 						
 	  [build]		
 		editing(build(L, i, j)) =  false
-		if nature(L,i,j) = EMPTY then :
-			nature(build(L,i,j)) = DIRTY
-		else
-			nature(build(L,i,j)) =  nature(L,i,j)
-
+		nature(build(L,i,j)) = DIRTY
+		∀x ∈ {0 ... w -1}, ∀y ∈ {0 ... h -1}; x!=i || y!=j
+			nature(build(L,i,j),x,y) = nature(L,x,y)@pre
+		exitX(build(L, i, j)) = exitX(L)@pre
+		exitY(build(L, i, j)) = exitY(L)@pre
+		entranceX(build(L, i, j)) = entranceX(L)@pre
+		entranceY(build(L, i, j)) = entranceY(L)@pre
 
 
 	  	 

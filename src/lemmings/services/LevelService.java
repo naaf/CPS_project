@@ -42,10 +42,9 @@ public interface LevelService {
 	 * 
 	 * pre: isEditing()
 	 * pre: caseExiste(x,y) 
-	 * post: si x1=x2 && y1=y2 
-	 * 		setNature(x1,y1,c).getNature(x2,y2) = c
-	 * post: si x1 != x2 || y1 != y2 
-	 * 		setNature(x1,y1,c).getNature(x2,y2) = getNature(x2,y2)
+	 * post: setNature(x,y,n).getNature(x,y) = n
+	 * post: ∀ x1 ∈ {0 ... w -1}, ∀y1 ∈ {0 ... h -1}; x != x1 || y != y1
+	 * 		setNature(x,y,c).getNature(x1,y1) = getNature(x1,y1)
 	 */
 	void setNature(int x, int y, Nature n);
 	
@@ -55,6 +54,8 @@ public interface LevelService {
 	 * pre: getNature(x,y) = DIRTY
 	 * post: isEditing() = isEditing()@pre
 	 * post: getNature(x,y) = EMPTY
+	 * post: ∀ x1 ∈ {0 ... w -1}, ∀y1 ∈ {0 ... h -1}; x != x1 || y != y1   
+	 *		remove(x, y).getNature(x1, y1) = getNature(x1, y1)@pre
 	 */
 	void remove(int x, int y);
 	
@@ -66,6 +67,8 @@ public interface LevelService {
 	 * pre: ¬(x = exitX() && (y = exitY() || y = exitY() +1)) 
 	 * post: isEditing() = isEditing()@pre
 	 * post: getNature(x,y) = DIRTY
+	 * post: ∀ x1 ∈ {0 ... w -1}, ∀y1 ∈ {0 ... h -1}; x != x1 || y != y1   
+	 *		build(x, y).getNature(x1, y1) = getNature(x1, y1)@pre
 	 */
 	void build(int x, int y);
 	
@@ -80,6 +83,8 @@ public interface LevelService {
 	 * post: entranceY() = eY 
 	 * post: exitX() = qX 
 	 * post: exitY() = qY 
+	 * post: ∀ x1 ∈ {0 ... w -1}, ∀y1 ∈ {0 ... h -1}; x != x1 || y != y1   
+	 *		goPlay(eX,eY,qX,qY).getNature(x1, y1) = getNature(x1, y1)@pre
 	 */
 	void goPlay(int eX, int eY, int qX, int qY);
 	
