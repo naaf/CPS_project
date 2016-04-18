@@ -7,10 +7,12 @@ Observators:
 	const width:[Level] --> int
 	editing:[Level] --> bool
 	nature:[Level] * int * int --> Nature
+		pre : nature(L,x,y) require caseExiste(L,x,y)
 	caseExiste:[Level] * int * int --> bool
-	
-	onExit : [Level] * int * int --> bool    
-		pre onExit(L, x, y) require ¬(editing(L))
+	exitX : [Level] --> int    
+		pre onExit(L) require ¬(editing(L))
+	exitY : [Level] --> int    
+		pre onExit(L) require ¬(editing(L))
 	entranceX: [Level] --> int 
 		pre entrance(L) require ¬(editing(L))
 	entranceY: [Level] --> int 
@@ -18,76 +20,84 @@ Observators:
                  		
 Constructors:      
 	init:int * int --> [Level]
-		pre init(n1 , n2) require (n1 > 0)^(n2 > 0)
+		pre init(h , w) require (h >= 5)^(w >= 4)
        
 Operators   :       
 	setNature:[Level] * int * int * Nature --> [Level]
-		pre setNature(L, n1, n2, Nat) require
-			caseExiste(L, n1, n2)
+		pre setNature(L, x, y, Nat) require
+			caseExiste(L, x, y)
 			^ editing(L)
 		                            
-	goPlay:[Level] --> [Level]
-		pre goPlay(L) require 
+	goPlay:[Level] * int * int * int * int --> [Level]
+		pre goPlay(L, eX, eY, qX, qY ) require 
 			editing(L) 
 			^ (∀ i ∈ {0, height(L) -1} et j ∈ {0 ... width(L) -1} nature(L,i,j) = METAL)
 			^ (∀ i ∈ {0 ... height(L) -1} et j ∈ {0 , width(L) -1} nature(L,i,j) = METAL)
-			^ ∃ y1,y2,y3 consécutifs  ∈ {1 ... height(L)-1} et ∃x ∈ {1 ... width(L)-1} tq 
-				nature(L,x,y1) = nature(L,x,y3) = nature(L,x,y2) = EMPTY  
-			^ ∃ y1,y2,y3 consécutifs ∈ {1 à height(L)-1} et ∃ x ∈ {1 à width(L)-1} tq 
-				nature(L,x,y3) = METAL ^ nature(L,x,y1) = EMPTY ^ nature(L,x,y2) = EMPTY 
+			^ nature(L,eX,eY -1) = nature(L,eX,eY) = nature(L,eX,eY+1) = EMPTY  
+			^ nature(L,qX,qY -1) = METAL ^ nature(L,qX,qY) = EMPTY ^ nature(L,qX,qY+1) = EMPTY 
 		                                          
 	remove:[Level] * int * int --> [Level]
-		pre remove(L, n1, n2) require
+		pre remove(L, x, y) require
 			¬(editing(L))
-			^ caseExiste(n1, n2)
-			^ nature(L, n1, n2) = DIRT
+			^ caseExiste(x, y)
+			^ nature(L, x, y) = DIRT
 		                            
 	build:[Level] * int * int --> [Level]     
-		pre remove(L, n1, n2) require
+		pre build(L, x, y) require
 			¬(editing(L))
-			^ caseExiste(n1, n2)
-			^ nature(L, n1, n2) = EMPTY
+			^ caseExiste(x, y)
+			^ nature(L, x, y) = EMPTY
+			^ ¬(x = entranceX(L) && (y = entranceY(L) || y = entranceY(L) -1 && y = entranceY(L) +1))
+			^ ¬(x = exitX(L) && (y = exitY(L) || y = exitY(L) +1)) 
                             
 Observations :
     [invariant]      
 		height(L) > 5 
 		width(L) > 4
 		caseExiste(L, n1, n2) min=  0 <= n1 < height(L) && 0 <= n1 < width(L)
-		
-           
     
     [init]          
-		height(init(n1 , n2)) = n1
-		width(init(n1 , n2)) = n2
-		editing(init(n1 , n2)) = true
-		∀i ∈ {0 ... n1 -1}, ∀j ∈ {0 ... n2 -1} 
-			nature(init(n1 , n2), i, j) = EMPTY
+		height(init(h , w)) = h
+		width(init(h , w)) = w
+		editing(init(h , w)) = true
+		∀i ∈ {0 ... w -1}, ∀j ∈ {0 ... h -1} 
+			nature(init(h , w), i, j) = EMPTY
+		
+		exitX(init(h , w)) = null
+		exitY(init(h , w)) = null
+		entranceX(init(h , w)) = null
+		entranceY(init(h , w)) = null
+		
          	          
      [setNature]          
-		editing(setNature(L, i, j, Nat)) = true
-		∀ i,p ∈ {0 ... n1 -1}, ∀ j,k ∈ {0 ... n2 -1}
-			if p = i && k = j then :
-				nature(setNature(L, i, j, Nat), p, k) = Nat
-			else
-				nature(setNature(L, i, j, Nat), p, k) = nature(L, p, k)    
+		editing(setNature(L, x, y, Nat)) = true
+		
+		nature(setNature(L, x, y, Nat), x, y) = Nat
+		pour tout x != x1 || y != y1   
+			nature(setNature(L, x, y, Nat), x1, y1) = nature(L, x1, y1)  
+        
+        exitX(setNature(L, x, y, Nat)) = null
+		exitY(setNature(L, x, y, Nat)) = null
+		entranceX(setNature(L, x, y, Nat)) = null
+		entranceY(setNature(L, x, y, Nat)) = null
                             
       [goPlay] 
-      	editing(goPlay(L)) =  ¬(editing(L))
-      	nature(goPlay(L),i,j) = nature(L,i,j)	
-		∃ y1,y2,y3 consécutifs  ∈ {1 ... height(L)-1} et ∃ x ∈ {1 ... width(L)-1} tq 
-		entrance(goPlay(L)) = <x,y2> && nature(goPlay(L),x,y1) = nature(goPlay(L),x,y3) = EMPTY 
-		∃ y1,y2,y3 consécutifs ∈ {1 ... height(L)-1} et ∃x ∈ {1 ... width(L)-1} tq 
-		onExit(goPlay(L),x,y2) && nature(goPlay(L),x,y1) = METAL && nature(goPlay(L),x,y3) = EMPTY
-								
+      	editing(goPlay(L, eX, eY, qX, qY)) =  false
+      	nature(goPlay(L, eX, eY, qX, qY),x,y) = nature(L,x,y)	
+		entranceX(goPlay(L,eX, eY, qX, qY)) = eX 
+		entranceY(goPlay(L,eX, eY, qX, qY)) = eY  
+		exitX(goPlay(L, eX, eY, qX, qY))= qX 
+		exitY(goPlay(L, eX, eY, qX, qY))= qY 
+
 	  [remove]
-		editing(remove(L, i, j)) =  editing(L)
+		editing(remove(L, i, j)) =  false
 		if nature(L,i,j) = DIRTY then :
 			nature(remove(L,i,j)) = EMPTY
 		else
 			nature(remove(L,i,j)) =  nature(L,i,j)
 						
 	  [build]		
-		editing(build(L, i, j)) =  editing(L)
+		editing(build(L, i, j)) =  false
 		if nature(L,i,j) = EMPTY then :
 			nature(build(L,i,j)) = DIRTY
 		else

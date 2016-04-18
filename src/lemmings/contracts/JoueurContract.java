@@ -1,17 +1,16 @@
 package lemmings.contracts;
 
-import lemmings.decorators.GameEngDecorator;
-import lemmings.services.GameEngService;
+import lemmings.decorators.JoueurDecorator;
+import lemmings.services.JoueurService;
 
-public class GameEngContract extends GameEngDecorator {
-
+public class JoueurContract extends JoueurDecorator {
 	// attribut ---------------------------------------------------------------
 	public void checkInvariant() {
 
 	}
 
 	// Constructors -----------------------------------------------------------
-	public GameEngContract(GameEngService delegate) {
+	public JoueurContract(JoueurService delegate) {
 		super(delegate);
 	}
 

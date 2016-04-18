@@ -3,36 +3,38 @@ use : GameEng
 types : ClasseType{ TOMBEUR, MARCHEUR,GRIMPEUR,CREUSEUR }
 
 Observators :
+	const nbJetons : [Joueur] --> int
 	gameEng : [Joueur] --> GameEng
-	nbJetons : [Joueur] --> int
-	jetons : [Joueur] * ClasseType --> int
-	const classeTypes : [Joueur] -> set<ClasseType, int>
+	getJetons : [Joueur] * ClasseType --> int
+	classeTypes : [Joueur] -> set<ClasseType, int>
 	
 Constructors :
  	init : GameEng * int --> Joueur
- 	
+ 		pre init(G,nbJtn) require nbJtn > 0 ^ G != NULL
  	
 Operators:
 	assignerClasse : [Joueur] * ClasseType * Lemming --> Joueur
-		pre: assignerClasse(J, c, l) require jetons(J, c) > 0
+		pre: assignerClasse(J, c, l) require getJetons(J, c) > 0
 	reset : [Joueur] --> Joueur
 	
 Observations:
 	[invariants]
-	
+		nbJetons > 0
+		classeTypes != {}
 	[init]
 		gameEng(init(G, n)) = G
 		nbJetons(init(G, n)) = n
-		jetons(init(G, n), c) = n
+		∀ ct ∈ classeTypes(); getJetons(init(G, n), ct) = n
 		classeTypes(init(G, n)) = {<MARCHEUR,n>,<GRIMPEUR,n>,...}
 		
 	
 	[assignerClasse]
 		gameEng(assignerClasse(J, c, l)) = gameEng(J)
-		jetons(assignerClasse(J, c, l), c) = jetons(J,c) -1
-		jetons(assignerClasse(J, c1, l), c2) = jetons(J,c2)
+		getJetons(assignerClasse(J, c, l), c) = getJetons(J,c)@pre -1
+		∀ c1,c2 ∈ classeTypes(); c1 != c2; getJetons(assignerClasse(J, c1, l), c2) = getJetons(J,c2)
 	
 	[reset]
-		gameEng(reset(J)) = gameEng(init(G, nbJetons(J)))
+		gameEng(reset(J)) = GameEng::init(gameEng().level(), gameEng().sizeColony(), gameEng().spawnSeep())
 		nbJetons(reset(J)) = nbJetons(J)
-		jetons(reset(J), c) = nbJetons(J)
+		∀ ct ∈ classeTypes(); getJetons(reset(J), ct) = nbJetons(J)
+		

@@ -5,22 +5,22 @@ types :
 Observators :
 	const level : [GameEng] -> [Level]
 	const sizeColony :[GameEng] -> int
-	spawnSpeed : [GameEng] -> int
+	const spawnSpeed : [GameEng] -> int
 	tour : [GameEng] -> int
 	obstacle : [GameEng] * int * int -> bool
-		pre obstacle(G,i,j) require 
-			Level::caseExiste(level(G), i, j)
+		pre obstacle(G,i,j) require Level::caseExiste(level(G), i, j)
 	gameOver : [GameEng] -> bool
 	score : [GameEng] -> int
 		pre score(G) require gameOver(G)
-	lemmings : [GameEng] -> set<Lemming>
+	nbSauves : [GameEng] -> int
+	lemmings : [GameEng] -> set<int>
 	lemmingExiste : [GameEng] * int -> bool
 	getLemming : [GameEng] * int -> Lemming
 		pre getLemming(G, n) require lemmingExiste(G,n)
 																
 Constructors : 
 	init : Level * int * int -> [GameEng]
-		pre : init(L,size,speed) require size > 0 ^ speed > 0 ^ L != NIL
+		pre : init(L,size,speed) require size > 0 ^ speed > 0 
 Operators
 	activeTour : [GameEng] -> GameEng
 		pre activeTour(G) require ¬ gameOver(G)
@@ -29,42 +29,49 @@ Operators
 	creeLemming : [GameEng] * int * int * int -> GameEng 
 		pre creeLemming(G, id, x, y) require card(lemmings(G)) < sizeColony(G)
 		^ ¬lemmingExiste(G, id)
+	saveLemming : [GameEng] * int -> GameEng
+		pre saveLemming(G, id) require lemmingExiste(G, id)
 	
 Observations :
 	[Invariant]
 		card(lemmings(G)) <= sizeColony(G)
-		gameOver(G) min= (card(lemmings(G)) == 0 ) && (tour(G) * spawnSpeed(G) >= sizeColony(G) )
-	
+		0 <= nbSauves() < sizeColony()
+		gameOver(G) min= (tour(G) * spawnSpeed(G) = sizeColony(G)) && (card(lemmings(G)) == 0 ) 
+		score(G) min= nbSauves(G)/sizeColony(G) * 100
+		obstacle(G,x,y) min= ¬(Level::nature(level(G), x,y) = EMPTY)
 	[init]
 		level(init(L, size, speed)) = L
-		obstacle(init(L, size, speed),i,j) = Level::nature(L,i,j) ∈ {DIRTY, METAL}
 		sizeColony(init(L, size, speed)) = size
 		spawnSpeed(init(L, size, speed)) = speed
 		gameOver(init(L, size, speed)) = false
 		tour(init(L, size, speed)) = 0
+		nbSauves(init(L, size, speed)) = 0
 		lemmings(init(L, size, speed)) = {}
 	
 	[supprimeLemming]
-		obstacle(supprimeLemming(G, id),i,j) = obstacle(G, i, j)
-		spawnSpeed(supprimeLemming(G, id)) = spawnSpeed(G)
-		gameOver(supprimeLemming(G, id)) = gameOver(G)
-		tour(supprimeLemming(G, id)) = tour(G)
-		lemmings(supprimeLemming(G, id)) = lemmings(G)@pre \ getLemming(G, id)
-		∀ n ∈  lemmings(G)::id / {num}, getLemming(supprimeLemming(G, num), n) = getLemming(G,n)
+		tour(supprimeLemming(G, id)) = tour(G)@pre
+		nbSauves(supprimeLemming(G, id)) = nbSauves(G)@pre
+		lemmings(supprimeLemming(G, id)) = lemmings(G)@pre /  id
+		∀ n ∈  lemmings(G) / {num}, getLemming(supprimeLemming(G, num), n) = getLemming(G,n)
 		
 	[creeLemming]
-		obstacle(creeLemming(G, id,x,y),i,j) = obstacle(G, i, j)
-		spawnSpeed(creeLemming(G, id,x,y)) = spawnSpeed(G)
-		gameOver(creeLemming(G, id,x,y)) = gameOver(G)
-		tour(creeLemming(G, id,x,y)) = tour(G)
-		lemmings(creeLemming(G, id,x,y)) = lemmings(G)@pre ⋃ {getLemming(G, id)}
+		tour(creeLemming(G, id,x,y)) = tour(G)@pre
+		nbSauves(supprimeLemming(G, id)) = nbSauves(G)@pre
+		lemmings(creeLemming(G, id,x,y)) = lemmings(G)@pre ⋃ {id}
 		getLemming(creeLemming(G, id,x,y), id) = Lemming::init(G,id,x,y)
-		∀ n ∈ lemmings(G)::id, getLemming(creeLemming(G, id,x,y), n) = getLemming(G, n)
+		∀ n ∈ lemmings(G) && n != id
+			getLemming(creeLemming(G,id,x,y), n) = getLemming(G, n)
+		
+	[saveLemming]
+		tour(saveLemming(G, id)) = tour(G)@pre
+		nbSauves(saveLemming(G, id)) = nbSauves(G)@pre +1
+		lemmings(saveLemming(G, id)) = lemmings(G)@pre / id
+		∀ n ∈  lemmings(G) / {num}, getLemming(saveLemming(G, num), n) = getLemming(G,n)
 		
 	[activeTour]
-		obstacle(activeTour(G),i,j) = Level::nature(L,i,j) ∈ {DIRTY, METAL}
-		spawnSpeed(activeTour(G)) = spawnSpeed(G)
-		gameOver(activeTour(G)) = gameOver(G)
-		tour(activeTour(G)) = tour(G) + 1
+		tour(activeTour(G)) = tour(G)@pre + 1
 		lemmings(activeTour(G)) = lemmings(G)
+		∀ n ∈ lemmings(G)
+			getLemming(activeTour(G),n) = getLemming(G,n)
+		
 		

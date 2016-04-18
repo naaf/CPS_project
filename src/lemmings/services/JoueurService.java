@@ -10,15 +10,34 @@ public interface JoueurService {
 	HashMap<ClasseType,Integer> getClasseTypes();
 	
 	// Invariants ----------------------------------------------------------
-	
+	/**
+	 * inv: getNbJetons() > 0
+	 * inv: getClasseTypes() != {}
+	 */
 	// Constructors --------------------------------------------------------
 	/**
-	 * 
+	 * pre: jetons > 0 && gameEng != NULL
+	 * post: getGameEng() = gameEng
+	 * post: getNbJetons() = jetons
+	 * post: ∀ ct ∈ getClasseTypes(), getJetons(ct) = jetons
 	 */
 	void init(GameEngService gameEng, int jetons);
 	
 	// Operators -----------------------------------------------------------
 	
+	/**
+	 * pre: getJetons(ct) > 0
+	 * post: ∀ t ∈ classeTypes(),
+	 * 		if( c == ct ) getJetons(ct) = getJetons(ct)@pre -1
+	 * 		else getJetons(ct) = getJetons(ct)@pre
+	 */
 	void assignerClasse(ClasseType ct, LemmingService l);
+	
+	/**
+	 * post: ∀ ct ∈ getClasseTypes(); getJetons(ct) = getNbJetons()
+	 * post: getNbJetons() = getNbJetons
+	 * post: getGameEng() = getGameEng().init(getGameEng().level, 
+	 * 		getGameEng().getSizeColony(), getGameEng().getSpawnSpeed())
+	 */
 	void reset();
 }
