@@ -4,7 +4,6 @@ types : Direction{GAUCHE, DROITE}, ClasseType{TOMBEUR, MARCHEUR,GRIMPEUR,CREUSEU
 
 Observators :
 	const gameEng : [Lemming] -> GameEng
-	const id : [Lemming] -> int
 	x : [Lemming] -> int
 	y : [lemming] -> int
 	direction : [Lemming] -> Direction
@@ -12,18 +11,20 @@ Observators :
 	enChute : [Lemming] -> int
 	
 Constructors : 
-	init : GamingEng * int * int * int -> [GameEng]
-		pre : init(G, id, x, y) require 
-		  Level::caseExiste(GameEng::level(G), x,y)
+	init : GamingEng * int * int -> [GameEng]
+		pre : init(G, x, y) require 
+		G != null
+		^ Level::caseExiste(GameEng::level(G), x,y)
 		^ Level::nature(GameEng::level(G), x, y) = EMPTY
 		^ Level::nature(GameEng::level(G), x, y +1) = EMPTY
 		
 
 Operators
  	step : [Lemming] -> Lemming
+ 		pre: step(l) require ¬GameEng::gameOver(gameEng(L))
 	setClasseLemming : [Lemming] * ClasseType -> Lemming
 	changeDirection : [Lemming] -> Lemming
-	
+		
 Observations :
 	
 	[Invariant]
@@ -31,13 +32,12 @@ Observations :
 		Level::nature(GameEng::level(gameEng(L)), x, y) = EMPTY
 	
 	[init]
-		x(init(G,id, i,j)) = i
-		y(init(G,id, i,j)) = j
-		id(init(G,id, i,j)) = id
-		gameEng(init(G,id, i,j)) = G
-		classeType(init(G,id, i,j)) = MARCHEUR
-		direction(init(G,id, i,j)) = DROITE
-		enChute(init(G,id, i,j)) = 0
+		x(init(G, i,j)) = i
+		y(init(G, i,j)) = j
+		gameEng(init(G, i,j)) = G
+		classeType(init(G, i,j)) = MARCHEUR
+		direction(init(G, i,j)) = DROITE
+		enChute(init(G, i,j)) = 0
 		
 	[setClasseLemming]
 		x(setType(L, T)) = x(L)@pre

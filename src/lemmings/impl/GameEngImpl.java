@@ -1,8 +1,11 @@
 package lemmings.impl;
 
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
+import lemmings.contracts.LemmingContract;
 import lemmings.services.GameEngService;
 import lemmings.services.LemmingService;
 import lemmings.services.LevelService;
@@ -21,7 +24,8 @@ public class GameEngImpl implements
 	private int spawnSpeed;
 	private int tour;
 	private int nbSauves;
-	private HashMap<Integer, LemmingService> lemmings;
+	private int nbCree;
+	private Map<Integer, LemmingService> lemmings;
 
 	// Constructors --------------------------------------------------------
 	public GameEngImpl() {
@@ -33,7 +37,8 @@ public class GameEngImpl implements
 		this.spawnSpeed = speed;
 		this.tour = 0;
 		this.nbSauves = 0;
-		this.lemmings = new HashMap<>();
+		this.nbCree = 0;
+		this.lemmings = new ConcurrentHashMap <>();
 		bindLevelService(level);
 	}
 
@@ -70,12 +75,12 @@ public class GameEngImpl implements
 
 	@Override
 	public boolean isGameOver() {
-		return (tour * spawnSpeed == sizeColony) && (lemmings.size() == 0);
+		return (tour * spawnSpeed >= sizeColony) && (lemmings.size() == 0);
 	}
 
 	@Override
 	public int getScore() {
-		return nbSauves / sizeColony * 100;
+		return (int)((double)nbSauves / sizeColony * 100);
 	}
 
 	@Override
@@ -98,16 +103,26 @@ public class GameEngImpl implements
 		return lemmings.get(id);
 	}
 
+	@Override
+	public Collection<LemmingService> lemmings() {
+		return lemmings.values();
+	}
+	
+	@Override
+	public int getNbCrees() {
+		return nbCree;
+	}
 	// Operators -----------------------------------------------------------
 
 	@Override
 	public void supprimeLemming(int id) {
 		lemmings.remove(id);
+		System.out.println("mort " + id);
 	}
 
 	@Override
 	public void creeLemming(int id, int x, int y) {
-		LemmingService l = new LemmingImpl();
+		LemmingService l = new LemmingContract(new LemmingImpl());
 		l.init(this, id, x, y);
 		lemmings.put(id, l);
 	}
@@ -120,10 +135,11 @@ public class GameEngImpl implements
 
 	@Override
 	public void activeTour() {
-		for (LemmingService l : lemmings.values()) {
-			l.step();
-		}
+		lemmings.entrySet().forEach(l -> l.getValue().step());
 		tour = tour + 1;
+		if (tour % spawnSpeed == 0 && nbCree < sizeColony) {
+			creeLemming(nbCree++, level.entranceX(), level.entranceY());
+		}
 	}
 
 }

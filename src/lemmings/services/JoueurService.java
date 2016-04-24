@@ -24,9 +24,14 @@ public interface JoueurService {
 	void init(GameEngService gameEng, int jetons);
 	
 	// Operators -----------------------------------------------------------
+	/**
+	 * 
+	 */
+	void startGame();
 	
 	/**
 	 * pre: getJetons(ct) > 0
+	 * pre: getGameEng().lemmingExiste(l.getId())
 	 * post: ∀ t ∈ classeTypes(),
 	 * 		if( c == ct ) getJetons(ct) = getJetons(ct)@pre -1
 	 * 		else getJetons(ct) = getJetons(ct)@pre

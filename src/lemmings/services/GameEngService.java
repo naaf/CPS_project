@@ -1,5 +1,6 @@
 package lemmings.services;
 
+import java.util.Collection;
 import java.util.Set;
 
 public interface GameEngService {
@@ -14,7 +15,9 @@ public interface GameEngService {
 	int getScore();
 	// pre: isGameOver()
 	int getNbSauves();
+	int getNbCrees();
 	Set<Integer> getLemmings();
+	public Collection<LemmingService> lemmings();
 	boolean lemmingExiste(int id);
 	LemmingService getLemming(int id);
 	//pre: lemmingExiste(id)
@@ -23,14 +26,16 @@ public interface GameEngService {
 	/**
 	 * inv: card(getLemmings()) <= getSizeColony()
 	 * inv: 0 <= nbSauves() < sizeColony()
-	 * getScore() min= getNbSauves()/getSizeColony() * 100
-	 * isObstacle(x,y) min= ¬(getLevel().nature(x,y) == EMPTY)
-	 * inv: isGameOver() min= (getTour() * getSpawnSpeed() == getSizeColony()) &&
+	 * inv: getScore() min= getNbSauves()/getSizeColony() * 100
+	 * inv: isObstacle(x,y) min= ¬(getLevel().nature(x,y) == EMPTY)
+	 * inv: getNbcrees() min= getTour() / getSpawnSpeed() 
+	 * inv: isGameOver() min= (getNbCrees() == getSizeColony()) &&
 	 * 		(card(getLemmings()) == 0)
 	 */
 	
 	// Constructors --------------------------------------------------------
 	/**
+	 * pre: level != null
 	 * pre: size > 0 && speed > 0 
 	 * post: getLevel() = L
 	 * post: getSizeColony() = size
@@ -38,6 +43,7 @@ public interface GameEngService {
 	 * post: isGameOver() = false
 	 * post: getTour() = 0
 	 * post: getNbsauves() = 0
+	 * post: getNbCrees() = 0
 	 * post: getLemmings() = {}
 	 */
 	void init(LevelService level,int size, int speed);
@@ -53,6 +59,7 @@ public interface GameEngService {
 	/**
 	 * pre: ¬lemmingExiste(id)
 	 * pre: getLemmings().size() < getSizeColony()
+	 * post: getNbCrees() = getNbCrees()@pre + 1
 	 * post: creeLemming(id,x,y).getLemmings() = getLemmings()@pre ⋃ {id}
 	 * post: if id = n then creeLemming(id,x,y).getLemming(n) = Lemming::init(id,x,y)
 	 * 		 else creeLemming(id,x,y).getLemming(n) = getLemming(n)
@@ -70,8 +77,6 @@ public interface GameEngService {
 	/**
 	 * pre: isGameOver() = false
 	 * post: activeTour().getTour() = getTour()@pre + 1
-	 * post: activeTour().getLemmings() = getLemmings()
-	 * post: ∀ n ∈ getLemmings(), activeTour().getLemming(n) = getLemming(n)
 	 */
 	void activeTour();
 	

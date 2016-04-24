@@ -15,7 +15,10 @@ Constructors :
 Operators:
 	assignerClasse : [Joueur] * ClasseType * Lemming --> Joueur
 		pre: assignerClasse(J, c, l) require getJetons(J, c) > 0
+		^ GameEng::lemmingExiste(gameEng(J), Lemming::getId(l))
 	reset : [Joueur] --> Joueur
+	startGame : [Joueur] --> Joueur
+		pre: startGame(J) require ¬Level::editing(GameEng::level(gameEng(J)))
 	
 Observations:
 	[invariants]

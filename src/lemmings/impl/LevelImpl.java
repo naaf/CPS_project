@@ -55,7 +55,7 @@ public class LevelImpl implements LevelService {
 
 	@Override
 	public boolean caseExiste(int x, int y) {
-		return x < width && y < height;
+		return 0 <= x && x < width && 0 <= y && y < height;
 	}
 
 	@Override
@@ -95,12 +95,12 @@ public class LevelImpl implements LevelService {
 	}
 
 	@Override
-	public void goPlay(int exitX, int exitY, int entX, int entY) {
+	public void goPlay(int eX, int eY, int qX, int qY) {
 		this.editing = false;
-		this.entranceX = entX;
-		this.entranceY = entY;
-		this.exitX = exitX;
-		this.exitY = exitY;
+		this.entranceX = eX;
+		this.entranceY = eY;
+		this.exitX = qX;
+		this.exitY = qY;
 	}
 
 }

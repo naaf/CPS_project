@@ -3,32 +3,32 @@ Service    :       Level
 Types      :       bool, int, enum Nature{EMPTY, DIRT, METAL}
 
 Observators:       
-	const height:[Level] --> int
-	const width:[Level] --> int
-	editing:[Level] --> bool
-	nature:[Level] * int * int --> Nature
+	const height:[Level] -> int
+	const width:[Level] -> int
+	editing:[Level] -> bool
+	nature:[Level] * int * int -> Nature
 		pre : nature(L,x,y) require caseExiste(L,x,y)
-	caseExiste:[Level] * int * int --> bool
-	exitX : [Level] --> int    
+	caseExiste:[Level] * int * int -> bool
+	exitX : [Level] -> int    
 		pre onExit(L) require ¬(editing(L))
-	exitY : [Level] --> int    
+	exitY : [Level] -> int    
 		pre onExit(L) require ¬(editing(L))
-	entranceX: [Level] --> int 
+	entranceX: [Level] -> int 
 		pre entrance(L) require ¬(editing(L))
-	entranceY: [Level] --> int 
+	entranceY: [Level] -> int 
         pre entrance(L) require ¬(editing(L))  
                  		
 Constructors:      
-	init:int * int --> [Level]
+	init:int * int -> [Level]
 		pre init(h , w) require (h >= 5)^(w >= 4)
        
 Operators   :       
-	setNature:[Level] * int * int * Nature --> [Level]
+	setNature:[Level] * int * int * Nature -> [Level]
 		pre setNature(L, x, y, Nat) require
 			caseExiste(L, x, y)
 			^ editing(L)
 		                            
-	goPlay:[Level] * int * int * int * int --> [Level]
+	goPlay:[Level] * int * int * int * int -> [Level]
 		pre goPlay(L, eX, eY, qX, qY ) require 
 			editing(L) 
 			^ (∀ i ∈ {0, height(L) -1} et j ∈ {0 ... width(L) -1} nature(L,i,j) = METAL)
@@ -36,13 +36,13 @@ Operators   :
 			^ nature(L,eX,eY -1) = nature(L,eX,eY) = nature(L,eX,eY+1) = EMPTY  
 			^ nature(L,qX,qY -1) = METAL ^ nature(L,qX,qY) = EMPTY ^ nature(L,qX,qY+1) = EMPTY 
 		                                          
-	remove:[Level] * int * int --> [Level]
+	remove:[Level] * int * int -> [Level]
 		pre remove(L, x, y) require
 			¬(editing(L))
 			^ caseExiste(x, y)
 			^ nature(L, x, y) = DIRT
 		                            
-	build:[Level] * int * int --> [Level]     
+	build:[Level] * int * int -> [Level]     
 		pre build(L, x, y) require
 			¬(editing(L))
 			^ caseExiste(x, y)

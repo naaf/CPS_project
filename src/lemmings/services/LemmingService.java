@@ -3,9 +3,9 @@ package lemmings.services;
 public interface LemmingService {
 	// Observators ---------------------------------------------------------
 	GameEngService gameEng();
-	int getId();
 	int getX();
 	int getY();
+	int getId();
 	Direction getDirection();
 	ClasseType getClasseType();
 	int enChute();
@@ -18,18 +18,18 @@ public interface LemmingService {
 	
 	// Constructors --------------------------------------------------------
 	/**
-	 * pre: gameEng().level().caseExiste(x,y)
-	 * pre: gameEng().level().getNature(x, y) = EMPTY
+	 * pre: ges != NULL
+	 * pre: ges.level().caseExiste(x,y)
+	 * pre: ges.level().getNature(x, y) = EMPTY
 	 * pre: gameEng()::level().getNature(x, y +1) = EMPTY
 	 * post: getX() = x
 	 * post: getY() = y
-	 * post: getId() = id
 	 * post: getDirection = DROITE
 	 * post: getClasseType = MARCHEUR
 	 * post: getGameEng() = gameEng
 	 * post: enChute()= 0
 	 */
-	void init(GameEngService ges, int id, int x, int y);
+	void init(GameEngService ges,int id, int x, int y);
 	
 	// Operators -----------------------------------------------------------
 	/**
@@ -48,11 +48,13 @@ public interface LemmingService {
 	 * post: changeDirection().getX() = getX()@pre
 	 * post: changeDirection().getY() = getY()@pre
 	 * post: changeDirection().getClasseType() = getClasseType()@pre
-	 * 			
+	 * post: enChute() = enChute()@pre			
 	 */
 	void changeDirection();
 	
 	/**
+	 * pre: gameEng().isGameOver() = false
+	 * post:
 	 * if getClasseType(L) = MARCHEUR then :
 	 *		enChute() = enChute()@pre
 	 *		if isObstacle(L, getX(), getY()-1)  then :
@@ -99,7 +101,7 @@ public interface LemmingService {
 	 *			getY() = getY()@pre
 	 *			getClasseType() = TOMBEUR
      *	
-     *		else if (getClasseType() = GRIMPEUR) then :
+     *	else if (getClasseType() = GRIMPEUR) then :
      *			
 	 *		if isObstacle(L,getX()+1,getY()) && isObstacle(getX()+1,getY()+1) &&
 	 *			¬isObstacle(getX(), getY()+2) then :

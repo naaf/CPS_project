@@ -1,5 +1,6 @@
 package lemmings.decorators;
 
+import java.util.Collection;
 import java.util.Set;
 
 import lemmings.services.GameEngService;
@@ -78,7 +79,15 @@ public class GameEngDecorator implements GameEngService {
 	public LemmingService getLemming(int id) {
 		return delegate.getLemming(id);
 	}
-
+	@Override
+	public Collection<LemmingService> lemmings() {
+		return delegate.lemmings();
+	}
+	
+	@Override
+	public int getNbCrees() {
+		return delegate.getNbCrees();
+	}
 
 	// Operators -----------------------------------------------------------
 	@Override

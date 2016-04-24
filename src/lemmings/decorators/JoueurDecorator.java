@@ -54,4 +54,9 @@ public class JoueurDecorator implements JoueurService {
 		delegate.reset();
 	}
 
+	@Override
+	public void startGame() {
+		delegate.startGame();
+	}
+
 }

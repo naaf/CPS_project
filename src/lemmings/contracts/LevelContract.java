@@ -2,7 +2,6 @@ package lemmings.contracts;
 
 import lemmings.decorators.LevelDecorator;
 import lemmings.errors.Contractor;
-import lemmings.errors.PreconditionError;
 import lemmings.services.LevelService;
 import lemmings.services.Nature;
 
@@ -26,8 +25,8 @@ public class LevelContract extends LevelDecorator {
 	@Override
 	public void init(int width, int height) {
 		// pre
-		if (getHeight() < 5 || getWidth() < 4) {
-			throw new PreconditionError("Dimension inférieur au minimal 4 x 5");
+		if (height < 5 || width < 4) {
+			Contractor.defaultContractor().preconditionError(SERVICE, "init", "dimension WxH < 4x5");
 		}
 		// run
 		super.init(width, height);
@@ -59,16 +58,11 @@ public class LevelContract extends LevelDecorator {
 			Contractor.defaultContractor().preconditionError(SERVICE, "getNature",
 					"case(" + x + "," + y + ")" + "notExiste");
 		}
-		return super.getNature(x, y);
-	}
-
-	@Override
-	public boolean caseExiste(int x, int y) {
-		if (x < 0 || x > getWidth() || y < 0 || y > getHeight()) {
-			Contractor.defaultContractor().preconditionError(SERVICE, "caseExiste",
-					"case(" + x + "," + y + ")" + "notExiste");
-		}
-		return super.caseExiste(x, y);
+		// run
+		Nature nat = super.getNature(x, y);
+		// inv post
+		checkInvariant();
+		return nat;
 	}
 
 	@Override
@@ -142,7 +136,7 @@ public class LevelContract extends LevelDecorator {
 		}
 		for (int i = 0; i < getWidth(); i++) {
 			for (int j = 0; j < getHeight(); j++) {
-				if (i != x || j != y && getNature(i, j) != grille_at_pre[i][j]) {
+				if ((i != x || j != y )&& getNature(i, j) != grille_at_pre[i][j]) {
 					Contractor.defaultContractor().postconditionError(SERVICE, "setNature",
 							"nature(" + x + "," + y + ")@pre" + " a changé");
 				}
@@ -193,7 +187,7 @@ public class LevelContract extends LevelDecorator {
 		}
 		for (int i = 0; i < getWidth(); i++) {
 			for (int j = 0; j < getHeight(); j++) {
-				if (i != x || j != y && getNature(i, j) != grille_at_pre[i][j]) {
+				if ((i != x || j != y) && getNature(i, j) != grille_at_pre[i][j]) {
 					Contractor.defaultContractor().postconditionError(SERVICE, "remove",
 							"nature(" + x + "," + y + ")@pre" + " a changé");
 				}
@@ -303,8 +297,8 @@ public class LevelContract extends LevelDecorator {
 			Contractor.defaultContractor().preconditionError(SERVICE, "goPlay", "entrance");
 
 		}
-		if (getNature(qX, qY - 1) != Nature.METAL || getNature(qX, qY) != Nature.EMPTY
-				|| getNature(qX, qY + 1) != Nature.EMPTY) {
+		if (getNature(qX, qY + 1) != Nature.METAL || getNature(qX, qY) != Nature.EMPTY
+				|| getNature(qX, qY - 1) != Nature.EMPTY) {
 			Contractor.defaultContractor().preconditionError(SERVICE, "goPlay", "exit");
 		}
 		// inv pre
@@ -332,16 +326,16 @@ public class LevelContract extends LevelDecorator {
 				}
 			}
 		}
-		if(entranceX() != eX){
+		if (entranceX() != eX) {
 			Contractor.defaultContractor().postconditionError(SERVICE, "goPlay", "entranceX()!=" + eX);
 		}
-		if(entranceY() != eY){
+		if (entranceY() != eY) {
 			Contractor.defaultContractor().postconditionError(SERVICE, "goPlay", "entranceY()!=" + eY);
 		}
-		if(exitX() != qX){
+		if (exitX() != qX) {
 			Contractor.defaultContractor().postconditionError(SERVICE, "goPlay", "exitX()!=" + qX);
 		}
-		if(exitY() != qY){
+		if (exitY() != qY) {
 			Contractor.defaultContractor().postconditionError(SERVICE, "goPlay", "exitY()!=" + qY);
 		}
 	}
