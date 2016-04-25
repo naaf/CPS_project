@@ -2,7 +2,8 @@ package lemmings.contracts;
 
 import lemmings.decorators.LemmingDecorator;
 import lemmings.errors.Contractor;
-import lemmings.services.ClasseType;
+import lemmings.impl.LemmingMarcheur;
+import lemmings.services.ActivityIF;
 import lemmings.services.Direction;
 import lemmings.services.GameEngService;
 import lemmings.services.LemmingService;
@@ -55,21 +56,18 @@ public class LemmingContract extends LemmingDecorator {
 		if (getDirection() != Direction.DROITE) {
 			Contractor.defaultContractor().postconditionError(SERVICE, "init", "getDirection() != Droite");
 		}
-		if (getClasseType() != ClasseType.MARCHEUR) {
+		if (!(getClasseType() instanceof LemmingMarcheur)) {
 			Contractor.defaultContractor().postconditionError(SERVICE, "init", "classeType() != Marcheur");
 		}
 		if (gameEng() != ges) {
 			Contractor.defaultContractor().postconditionError(SERVICE, "init", "gameEng() != ges");
-		}
-		if (enChute() != 0) {
-			Contractor.defaultContractor().postconditionError(SERVICE, "init", "enChute() != 0");
 		}
 	}
 
 	// Observators -------------------------------------------------------------
 	// Operators ---------------------------------------------------------------
 	@Override
-	public void setClasseLemming(ClasseType t) {
+	public void setClasseLemming(ActivityIF cl) {
 		// pre
 		// inv pre
 		checkInvariant();
@@ -79,7 +77,7 @@ public class LemmingContract extends LemmingDecorator {
 		Direction dir_at_pre = getDirection();
 
 		// run
-		super.setClasseLemming(t);
+		super.setClasseLemming(cl);
 		// inv post
 		checkInvariant();
 		// post
@@ -93,11 +91,8 @@ public class LemmingContract extends LemmingDecorator {
 			Contractor.defaultContractor().postconditionError(SERVICE, "setClasseLemming",
 					"getDirection() != dir_at_pre");
 		}
-		if (getClasseType() != t) {
+		if (getClasseType() != cl) {
 			Contractor.defaultContractor().postconditionError(SERVICE, "setClasseLemming", "getClasseType() != t");
-		}
-		if (enChute() != 0) {
-			Contractor.defaultContractor().postconditionError(SERVICE, "setClasseLemming", "enChute() != 0");
 		}
 	}
 
@@ -109,8 +104,7 @@ public class LemmingContract extends LemmingDecorator {
 		// Captures
 		int x_at_pre = getX();
 		int y_at_pre = getY();
-		int chute_at_pre = enChute();
-		ClasseType ct_at_pre = getClasseType();
+		ActivityIF ct_at_pre = getClasseType();
 		Direction dir_at_pre = getDirection();
 		// run
 		super.changeDirection();
@@ -130,9 +124,6 @@ public class LemmingContract extends LemmingDecorator {
 		if (getClasseType() != ct_at_pre) {
 			Contractor.defaultContractor().postconditionError(SERVICE, "changeDirection",
 					"getClasseType() != ct_at_pre");
-		}
-		if (enChute() != chute_at_pre) {
-			Contractor.defaultContractor().postconditionError(SERVICE, "setClasseLemming", "enChute() != chute_at_pre");
 		}
 
 	}

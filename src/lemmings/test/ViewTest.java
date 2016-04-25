@@ -14,14 +14,14 @@ public class ViewTest {
 		LevelContract lc = new LevelContract(new LevelImpl());
 		lc.init(JoueurView.L_WIDTH, JoueurView.L_HEIGHT);
 		for (int i = 0; i < JoueurView.L_WIDTH; i++) {
-			lc.setNature(i, 7, Nature.DIRTY);
-			lc.setNature(i, 9, Nature.DIRTY);
-			lc.setNature(i, 12, Nature.DIRTY);
+			lc.setNature(i, 6, Nature.DIRTY);
+			lc.setNature(i, 5, Nature.DIRTY);
+			lc.setNature(i, 4, Nature.DIRTY);
 		}
-		for (int i = 0; i < JoueurView.L_HEIGHT; i++) {
-			lc.setNature(7, i, Nature.DIRTY);
-			lc.setNature(14, i, Nature.DIRTY);
-		}
+//		for (int i = 0; i < JoueurView.L_HEIGHT; i++) {
+//			lc.setNature(7, i, Nature.DIRTY);
+//			lc.setNature(14, i, Nature.DIRTY);
+//		}
 		for (int i = 0; i < JoueurView.L_WIDTH; i++) {
 			lc.setNature(i, 0, Nature.METAL);
 			lc.setNature(i, JoueurView.L_HEIGHT - 1, Nature.METAL);
@@ -34,7 +34,7 @@ public class ViewTest {
 		lc.setNature(7, 13, Nature.EMPTY);
 		
 		GameEngContract gc = new GameEngContract(new GameEngImpl());
-		gc.init(lc, 12, 2);
+		gc.init(lc, 4, 3);
 		JoueurContract jc = new JoueurContract(new JoueurImpl());
 		jc.init(gc, 12);
 		lc.goPlay(2, 2, 13, 14);

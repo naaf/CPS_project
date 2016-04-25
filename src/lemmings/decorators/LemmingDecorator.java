@@ -1,6 +1,8 @@
 package lemmings.decorators;
 
-import lemmings.services.ClasseType;
+import java.util.Optional;
+
+import lemmings.services.ActivityIF;
 import lemmings.services.Direction;
 import lemmings.services.GameEngService;
 import lemmings.services.LemmingService;
@@ -48,19 +50,14 @@ public class LemmingDecorator implements LemmingService {
 	}
 
 	@Override
-	public ClasseType getClasseType() {
+	public ActivityIF getClasseType() {
 		return delegate.getClasseType();
-	}
-
-	@Override
-	public int enChute() {
-		return delegate.enChute();
 	}
 
 	// Operators -----------------------------------------------------------
 	@Override
-	public void setClasseLemming(ClasseType t) {
-		delegate.setClasseLemming(t);
+	public void setClasseLemming(ActivityIF cl) {
+		delegate.setClasseLemming(cl);
 	}
 
 	@Override
@@ -73,4 +70,26 @@ public class LemmingDecorator implements LemmingService {
 		delegate.step();
 	}
 
+	@Override
+	public void setX(int x) {
+		delegate.setX(x);
+	}
+
+	@Override
+	public void setY(int y) {
+		delegate.setY(y);
+	}
+
+	@Override
+	public void setCumul(ActivityIF cumul) {
+		delegate.setCumul(cumul);		
+	}
+
+	@Override
+	public Optional<ActivityIF> getCumul() {
+		return delegate.getCumul();
+	}
+	
+
+	
 }

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -21,6 +22,17 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import lemmings.contracts.JoueurContract;
+import lemmings.impl.LemmingConstructeur;
+import lemmings.impl.LemmingCreuseur;
+import lemmings.impl.LemmingExploseur;
+import lemmings.impl.LemmingFlotteur;
+import lemmings.impl.LemmingGrimpeur;
+import lemmings.impl.LemmingMarcheur;
+import lemmings.impl.LemmingMineur;
+import lemmings.impl.LemmingPelleur;
+import lemmings.impl.LemmingStoppeur;
+import lemmings.impl.LemmingTombeur;
+import lemmings.services.ActivityIF;
 import lemmings.services.ClasseType;
 import lemmings.services.GameEngService;
 import lemmings.services.LemmingService;
@@ -29,7 +41,7 @@ import lemmings.services.Nature;
 
 public class JoueurView {
 	public final static int CASE = 32;
-	public final static int L_WIDTH = 16;
+	public final static int L_WIDTH = 32;
 	public final static int WIDTH = CASE * L_WIDTH;
 	public final static int L_HEIGHT = 16;
 	public final static int HEIGHT = CASE * L_HEIGHT + 64;
@@ -43,12 +55,12 @@ public class JoueurView {
 	private JoueurContract jc;
 	private GameEngService gc;
 	private LevelService lc;
-	private ClasseType currentSelected;
+	private Optional<ClasseType> currentSelected;
 	private Map<ClasseType, JButton> btns;
 	private Map<String, BufferedImage> activeSprites;
 
-	public JoueurView(JoueurContract jc) {
-		this.jc = jc;
+	public JoueurView(JoueurContract jcnt) {
+		jc = jcnt;
 		gc = jc.getGameEng();
 		lc = gc.getLevel();
 		this.currentSelected = null;
@@ -76,12 +88,11 @@ public class JoueurView {
 			hbox.add(btn);
 
 			btn.addActionListener(evt -> {
-				currentSelected = e.getKey();
+				currentSelected = Optional.of(e.getKey());
 				btn.setBackground(Color.GRAY);
 				btns.values().stream().filter(b -> b != btn).forEach(b -> b.setBackground(null));
 			});
 		});
-		
 
 		/** env Level **/
 		envLevel.addMouseListener(new MouseAdapter() {
@@ -92,11 +103,12 @@ public class JoueurView {
 					LemmingService lm = gc.lemmings().stream()
 							.filter(l -> l.getX() == e.getX() / CASE && l.getY() == e.getY() / CASE).findFirst().get();
 					System.out.println("trouveLemming");
-					if (currentSelected != null) {
-						jc.assignerClasse(currentSelected, lm);
-						btns.get(currentSelected)
-								.setText(currentSelected.toString() + " " + jc.getJetons(currentSelected));
-					}
+					currentSelected.ifPresent(ct -> {
+						jc.assignerClasse(getActivity(ct), lm);
+						btns.get(ct).setText(ct.toString() + " " + jc.getJetons(ct));
+
+					});
+
 				} catch (NoSuchElementException e1) {
 					System.out.println("noLemming");
 				}
@@ -114,6 +126,34 @@ public class JoueurView {
 		envFrame.setResizable(false);
 		envFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		envFrame.setVisible(true);
+	}
+
+	private ActivityIF getActivity(ClasseType ct) {
+		switch (ct) {
+		case TOMBEUR:
+			return new LemmingTombeur();
+		case MARCHEUR:
+			return new LemmingMarcheur();
+		case CREUSEUR:
+			return new LemmingCreuseur();
+		case GRIMPEUR:
+			return new LemmingGrimpeur();
+		case CONSTRUCTEUR:
+			return new LemmingConstructeur();
+		case STOPPEUR:
+			return new LemmingStoppeur();
+		case EXPLOSEUR:
+			return new LemmingExploseur();
+		case FLOTTEUR:
+			return new LemmingFlotteur();
+		case MINEUR:
+			return new LemmingMineur();
+		case PELLEUR:
+			return new LemmingPelleur();
+		
+		}
+		return null;
+
 	}
 
 	public void repain() {
@@ -138,7 +178,7 @@ public class JoueurView {
 			nat = EXIT_IMG;
 			img = ImageIO.read(new File("assets/" + nat + ".png"));
 			activeSprites.put(nat, img);
-			
+
 		} catch (IOException e) {
 			throw new Error("Cannot load image file: " + nat + ".png");
 		}
@@ -155,7 +195,7 @@ public class JoueurView {
 		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			
+
 			Graphics2D g2d = (Graphics2D) g;
 			setBackground(Color.WHITE);
 			for (int i = 0; i < L_WIDTH; i++) {
@@ -167,17 +207,18 @@ public class JoueurView {
 				}
 			}
 			int x = lc.entranceX(), y = lc.entranceY();
-			g2d.drawImage(activeSprites.get(ENTRANCE_IMG), x * CASE, y * CASE, x * CASE + CASE, y * CASE + CASE, 0,
-					0, CASE, CASE, null);
-			
-			 x = lc.exitX(); y = lc.exitY();
-			g2d.drawImage(activeSprites.get(EXIT_IMG), x * CASE, y * CASE, x * CASE + CASE, y * CASE + CASE, 0,
-					0, CASE, CASE, null);
-			
+			g2d.drawImage(activeSprites.get(ENTRANCE_IMG), x * CASE, y * CASE, x * CASE + CASE, y * CASE + CASE, 0, 0,
+					CASE, CASE, null);
+
+			x = lc.exitX();
+			y = lc.exitY();
+			g2d.drawImage(activeSprites.get(EXIT_IMG), x * CASE, y * CASE, x * CASE + CASE, y * CASE + CASE, 0, 0, CASE,
+					CASE, null);
+
 			gc.lemmings().forEach(l -> {
 				int xe = l.getX(), ye = l.getY();
-				g2d.drawImage(activeSprites.get(LEMMING_IMG), xe * CASE, ye * CASE, xe * CASE + CASE, ye * CASE + CASE, 0,
-						0, CASE, CASE, null);
+				g2d.drawImage(activeSprites.get(LEMMING_IMG), xe * CASE, ye * CASE, xe * CASE + CASE, ye * CASE + CASE,
+						0, 0, CASE, CASE, null);
 			});
 		}
 

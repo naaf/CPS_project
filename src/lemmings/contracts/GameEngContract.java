@@ -21,7 +21,7 @@ public class GameEngContract extends GameEngDecorator {
 		if (0 > getNbSauves() || getNbSauves() > getSizeColony()) {
 			Contractor.defaultContractor().invariantError(SERVICE, "0 > getNbSauves() > getSizeColony()");
 		}
-		if (isGameOver() != (getTour() * getSpawnSpeed() >= getSizeColony()) && (getLemmings().size() == 0)) {
+		if (isGameOver() != (getNbCrees() == getSizeColony()) && (getLemmings().size() == 0)) {
 			Contractor.defaultContractor().invariantError(SERVICE,
 					"isGameOver() != toute la colony est creer && il n'y a plus de lemmings active");
 		}

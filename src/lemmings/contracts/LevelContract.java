@@ -255,7 +255,7 @@ public class LevelContract extends LevelDecorator {
 		}
 		for (int i = 0; i < getWidth(); i++) {
 			for (int j = 0; j < getHeight(); j++) {
-				if (i != x || j != y && getNature(i, j) != grille_at_pre[i][j]) {
+				if ((i != x || j != y) && getNature(i, j) != grille_at_pre[i][j]) {
 					Contractor.defaultContractor().postconditionError(SERVICE, "build",
 							"nature(" + x + "," + y + ")@pre" + " a changé");
 				}

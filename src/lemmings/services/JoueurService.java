@@ -36,7 +36,7 @@ public interface JoueurService {
 	 * 		if( c == ct ) getJetons(ct) = getJetons(ct)@pre -1
 	 * 		else getJetons(ct) = getJetons(ct)@pre
 	 */
-	void assignerClasse(ClasseType ct, LemmingService l);
+	void assignerClasse(ActivityIF ct, LemmingService l);
 	
 	/**
 	 * post: ∀ ct ∈ getClasseTypes(); getJetons(ct) = getNbJetons()

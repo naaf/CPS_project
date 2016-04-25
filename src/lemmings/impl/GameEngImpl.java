@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import lemmings.contracts.LemmingContract;
+import lemmings.services.ClasseType;
 import lemmings.services.GameEngService;
 import lemmings.services.LemmingService;
 import lemmings.services.LevelService;
@@ -38,7 +39,7 @@ public class GameEngImpl implements
 		this.tour = 0;
 		this.nbSauves = 0;
 		this.nbCree = 0;
-		this.lemmings = new ConcurrentHashMap <>();
+		this.lemmings = new ConcurrentHashMap<>();
 		bindLevelService(level);
 	}
 
@@ -70,17 +71,19 @@ public class GameEngImpl implements
 
 	@Override
 	public boolean isObstacle(int x, int y) {
-		return level.getNature(x, y) != Nature.EMPTY;
+		return level.getNature(x, y) != Nature.EMPTY || lemmings().stream()
+				.filter(l -> l.getX() == x && l.getY() == y && l.getClasseType().getTypeClasse() == ClasseType.STOPPEUR)
+				.findFirst().isPresent();
 	}
 
 	@Override
 	public boolean isGameOver() {
-		return (tour * spawnSpeed >= sizeColony) && (lemmings.size() == 0);
+		return (nbCree == sizeColony) && (lemmings.size() == 0);
 	}
 
 	@Override
 	public int getScore() {
-		return (int)((double)nbSauves / sizeColony * 100);
+		return (int) ((double) nbSauves / sizeColony * 100);
 	}
 
 	@Override
@@ -107,7 +110,7 @@ public class GameEngImpl implements
 	public Collection<LemmingService> lemmings() {
 		return lemmings.values();
 	}
-	
+
 	@Override
 	public int getNbCrees() {
 		return nbCree;
@@ -138,7 +141,9 @@ public class GameEngImpl implements
 		lemmings.entrySet().forEach(l -> l.getValue().step());
 		tour = tour + 1;
 		if (tour % spawnSpeed == 0 && nbCree < sizeColony) {
-			creeLemming(nbCree++, level.entranceX(), level.entranceY());
+			creeLemming(nbCree, level.entranceX(), level.entranceY());
+			System.out.println("creation lemming " + nbCree);
+			nbCree++;
 		}
 	}
 

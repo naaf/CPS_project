@@ -2,6 +2,7 @@ package lemmings.decorators;
 
 import java.util.HashMap;
 
+import lemmings.services.ActivityIF;
 import lemmings.services.ClasseType;
 import lemmings.services.GameEngService;
 import lemmings.services.JoueurService;
@@ -45,7 +46,7 @@ public class JoueurDecorator implements JoueurService {
 
 	// Operators -----------------------------------------------------------
 	@Override
-	public void assignerClasse(ClasseType ct, LemmingService l) {
+	public void assignerClasse(ActivityIF ct, LemmingService l) {
 		delegate.assignerClasse(ct, l);
 	}
 

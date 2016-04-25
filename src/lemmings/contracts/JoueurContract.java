@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import lemmings.decorators.JoueurDecorator;
 import lemmings.errors.Contractor;
+import lemmings.services.ActivityIF;
 import lemmings.services.ClasseType;
 import lemmings.services.GameEngService;
 import lemmings.services.JoueurService;
@@ -55,9 +56,9 @@ public class JoueurContract extends JoueurDecorator {
 	// Observators -------------------------------------------------------------
 	// Operators ---------------------------------------------------------------
 	@Override
-	public void assignerClasse(ClasseType ct, LemmingService l) {
+	public void assignerClasse(ActivityIF ct, LemmingService l) {
 		// pre
-		if (getJetons(ct) <= 0) {
+		if (getJetons(ct.getTypeClasse()) <= 0) {
 			Contractor.defaultContractor().preconditionError(SERVICE, "assignerClasse", "getJetons(ct) <= 0");
 		}
 		if (!getGameEng().lemmingExiste(l.getId())) {
@@ -68,17 +69,17 @@ public class JoueurContract extends JoueurDecorator {
 		// Captures
 		HashMap<ClasseType, Integer> cts_at_pre = new HashMap<>();
 		cts_at_pre.putAll(getClasseTypes());
-		int jtnUse_at_pre = getJetons(ct);
+		int jtnUse_at_pre = getJetons(ct.getTypeClasse());
 		// run
 		super.assignerClasse(ct, l);
 		// inv post
 		checkInvariant();
 		// post
-		if (getJetons(ct) != jtnUse_at_pre - 1) {
+		if (getJetons(ct.getTypeClasse()) != jtnUse_at_pre - 1) {
 			Contractor.defaultContractor().postconditionError(SERVICE, "assignerClasse",
 					"getJetons(ct) != jtnUse_at_pre - 1");
 		}
-		cts_at_pre.entrySet().stream().filter(e -> e.getKey() != ct && e.getValue() != getClasseTypes().get(e.getKey()))
+		cts_at_pre.entrySet().stream().filter(e -> e.getKey() != ct.getTypeClasse() && e.getValue() != getClasseTypes().get(e.getKey()))
 				.forEach(e -> Contractor.defaultContractor().postconditionError(SERVICE, "assignerClasse",
 						e.getKey() + "," + e.getValue() + "!= " + getClasseTypes().get(e.getKey())));
 	}
