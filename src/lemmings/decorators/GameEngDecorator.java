@@ -1,7 +1,6 @@
 package lemmings.decorators;
 
 import java.util.Collection;
-import java.util.Set;
 
 import lemmings.services.GameEngService;
 import lemmings.services.LemmingService;
@@ -66,11 +65,6 @@ public class GameEngDecorator implements GameEngService {
 	}
 
 	@Override
-	public Set<Integer> getLemmings() {
-		return delegate.getLemmings();
-	}
-
-	@Override
 	public boolean lemmingExiste(int id) {
 		return delegate.lemmingExiste(id);
 	}
@@ -79,6 +73,7 @@ public class GameEngDecorator implements GameEngService {
 	public LemmingService getLemming(int id) {
 		return delegate.getLemming(id);
 	}
+
 	@Override
 	public Collection<LemmingService> lemmings() {
 		return delegate.lemmings();
@@ -108,6 +103,13 @@ public class GameEngDecorator implements GameEngService {
 	@Override
 	public void activeTour() {
 		delegate.activeTour();		
+	}
+
+
+
+	@Override
+	public void stopCreation() {
+		delegate.stopCreation();
 	}
 
 }

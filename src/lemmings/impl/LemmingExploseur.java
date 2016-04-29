@@ -1,11 +1,11 @@
 package lemmings.impl;
 
-import lemmings.services.ActivityIF;
+import lemmings.services.ActivityLemming;
 import lemmings.services.ClasseType;
 import lemmings.services.LemmingService;
 import lemmings.services.Nature;
 
-public class LemmingExploseur implements ActivityIF {
+public class LemmingExploseur implements ActivityLemming {
 	private static final int ATTENTE_TOUR = 5;
 	private int attente;
 

@@ -3,27 +3,37 @@ use : GameEng
 types : ClasseType{ TOMBEUR, MARCHEUR,GRIMPEUR,CREUSEUR }
 
 Observators :
-	const nbJetons : [Joueur] --> int
+	const nbJetons : [Joueur] -> int
 	gameEng : [Joueur] --> GameEng
-	getJetons : [Joueur] * ClasseType --> int
+	getJetons : [Joueur] * ClasseType -> int
 	classeTypes : [Joueur] -> set<ClasseType, int>
 	
+	
 Constructors :
- 	init : GameEng * int --> Joueur
+ 	init : GameEng * int -> Joueur
  		pre init(G,nbJtn) require nbJtn > 0 ^ G != NULL
  	
 Operators:
-	assignerClasse : [Joueur] * ClasseType * Lemming --> Joueur
-		pre: assignerClasse(J, c, l) require getJetons(J, c) > 0
+	assignerClasse : [Joueur] * ActivityLemming * Lemming -> Joueur
+		pre: assignerClasse(J, cl, l) require 
+		getJetons(J, ActivityLemming::classeType(cl)) > 0
 		^ GameEng::lemmingExiste(gameEng(J), Lemming::getId(l))
-	reset : [Joueur] --> Joueur
+		^ ¬GameEng::gameOver
+		
+	reset : [Joueur] -> Joueur
+		pre: reset(J) require ¬GameEng::gameOver
+		
 	startGame : [Joueur] --> Joueur
-		pre: startGame(J) require ¬Level::editing(GameEng::level(gameEng(J)))
-	
+		pre: startGame(J) require ¬GameEng::gameOver
+		
+	annihilation : [Joueur] -> Joueur
+		pre: annihilation(J) require ¬GameEng::gameOver
+		
 Observations:
 	[invariants]
 		nbJetons > 0
 		classeTypes != {}
+		
 	[init]
 		gameEng(init(G, n)) = G
 		nbJetons(init(G, n)) = n
@@ -36,8 +46,14 @@ Observations:
 		getJetons(assignerClasse(J, c, l), c) = getJetons(J,c)@pre -1
 		∀ c1,c2 ∈ classeTypes(); c1 != c2; getJetons(assignerClasse(J, c1, l), c2) = getJetons(J,c2)
 	
+	[startGame]
+		
 	[reset]
 		gameEng(reset(J)) = GameEng::init(gameEng().level(), gameEng().sizeColony(), gameEng().spawnSeep())
 		nbJetons(reset(J)) = nbJetons(J)
 		∀ ct ∈ classeTypes(); getJetons(reset(J), ct) = nbJetons(J)
+	
+			
+	[annihilation]
+		
 		

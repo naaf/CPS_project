@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import lemmings.decorators.JoueurDecorator;
 import lemmings.errors.Contractor;
-import lemmings.services.ActivityIF;
+import lemmings.services.ActivityLemming;
 import lemmings.services.ClasseType;
 import lemmings.services.GameEngService;
 import lemmings.services.JoueurService;
@@ -56,7 +56,7 @@ public class JoueurContract extends JoueurDecorator {
 	// Observators -------------------------------------------------------------
 	// Operators ---------------------------------------------------------------
 	@Override
-	public void assignerClasse(ActivityIF ct, LemmingService l) {
+	public void assignerClasse(ActivityLemming ct, LemmingService l) {
 		// pre
 		if (getJetons(ct.getTypeClasse()) <= 0) {
 			Contractor.defaultContractor().preconditionError(SERVICE, "assignerClasse", "getJetons(ct) <= 0");
@@ -83,6 +83,8 @@ public class JoueurContract extends JoueurDecorator {
 				.forEach(e -> Contractor.defaultContractor().postconditionError(SERVICE, "assignerClasse",
 						e.getKey() + "," + e.getValue() + "!= " + getClasseTypes().get(e.getKey())));
 	}
+	
+	
 
 	@Override
 	public void reset() {
@@ -98,5 +100,6 @@ public class JoueurContract extends JoueurDecorator {
 				.forEach(e -> Contractor.defaultContractor().postconditionError(SERVICE, "reset",
 						e.getKey() + "," + e.getValue() + "!= " + getNbJetons()));
 	}
+
 
 }

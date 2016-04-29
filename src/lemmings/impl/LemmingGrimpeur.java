@@ -1,11 +1,11 @@
 package lemmings.impl;
 
-import lemmings.services.ActivityIF;
+import lemmings.services.ActivityLemming;
 import lemmings.services.ClasseType;
 import lemmings.services.Direction;
 import lemmings.services.LemmingService;
 
-public class LemmingGrimpeur implements ActivityIF {
+public class LemmingGrimpeur implements ActivityLemming {
 
 	@Override
 	public void step(LemmingService lm) {

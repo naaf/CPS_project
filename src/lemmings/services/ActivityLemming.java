@@ -1,6 +1,6 @@
 package lemmings.services;
 
-public interface ActivityIF {
+public interface ActivityLemming {
 
 	void step(LemmingService lm);
 	ClasseType getTypeClasse();

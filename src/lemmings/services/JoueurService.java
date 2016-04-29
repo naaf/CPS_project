@@ -16,7 +16,8 @@ public interface JoueurService {
 	 */
 	// Constructors --------------------------------------------------------
 	/**
-	 * pre: jetons > 0 && gameEng != NULL
+	 * pre: jetons > 0
+	 * pre: gameEng != NULL
 	 * post: getGameEng() = gameEng
 	 * post: getNbJetons() = jetons
 	 * post: ∀ ct ∈ getClasseTypes(), getJetons(ct) = jetons
@@ -30,14 +31,25 @@ public interface JoueurService {
 	void startGame();
 	
 	/**
-	 * pre: getJetons(ct) > 0
-	 * pre: getGameEng().lemmingExiste(l.getId())
+	  * pre: getJetons(activity) > 0
+	 * pre: getGameEng().lemmingExiste(lm.getId())
 	 * post: ∀ t ∈ classeTypes(),
-	 * 		if( c == ct ) getJetons(ct) = getJetons(ct)@pre -1
-	 * 		else getJetons(ct) = getJetons(ct)@pre
+	 * 		if( t == activity.getClasseType() ) getJetons(t) = getJetons(t)@pre -1
+	 * 		else getJetons(t) = getJetons(t)@pre
+	 * post: l.getClasseLemming() = activity
 	 */
-	void assignerClasse(ActivityIF ct, LemmingService l);
+	void assignerClasse(ActivityLemming activity, LemmingService lm);
 	
+	/**
+	 * pre: getJetons(activity) > 0
+	 * pre: getGameEng().lemmingExiste(lm.getId())
+	 * post: ∀ t ∈ classeTypes(),
+	 * 		if( t == activity.getClasseType() ) getJetons(t) = getJetons(t)@pre -1
+	 * 		else getJetons(t) = getJetons(t)@pre
+	 * post: l.getCumul() = activity
+	 */
+	void assignerCumul(ActivityLemming activity, LemmingService lm);
+
 	/**
 	 * post: ∀ ct ∈ getClasseTypes(); getJetons(ct) = getNbJetons()
 	 * post: getNbJetons() = getNbJetons
@@ -45,4 +57,9 @@ public interface JoueurService {
 	 * 		getGameEng().getSizeColony(), getGameEng().getSpawnSpeed())
 	 */
 	void reset();
+	
+	/**
+	 * 
+	 */
+	void annihilation();
 }

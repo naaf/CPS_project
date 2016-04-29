@@ -1,5 +1,5 @@
 Service : Lemming
-use : GameEng
+use : GameEng, ActivityLemming
 types : Direction{GAUCHE, DROITE}, ClasseType{TOMBEUR, MARCHEUR,GRIMPEUR,CREUSEUR}
 
 Observators :
@@ -7,8 +7,9 @@ Observators :
 	x : [Lemming] -> int
 	y : [lemming] -> int
 	direction : [Lemming] -> Direction
-	classeType : [Lemming]  -> ClasseType
-	enChute : [Lemming] -> int
+	classeLemming : [Lemming]  -> ActivityLemming
+	cumul : [Lemming]  -> ActivityLemming
+	classeType : [Lemming] -> ClasseType
 	
 Constructors : 
 	init : GamingEng * int * int -> [GameEng]
@@ -24,6 +25,12 @@ Operators
  		pre: step(l) require ¬GameEng::gameOver(gameEng(L))
 	setClasseLemming : [Lemming] * ClasseType -> Lemming
 	changeDirection : [Lemming] -> Lemming
+	setX : [Lemming] * int -> Lemming
+		pre setX(L, x) require x <= 0 && x < Level::width 
+	setY : [Lemming] * int -> Lemming
+		pre setY(L, y) require y <= 0 && y < Level::height
+	setCumul : [Lemming] * ActivityLemming -> Lemming	
+		pre setCumul(L, cumul) require cumul != null	
 		
 Observations :
 	
@@ -37,14 +44,14 @@ Observations :
 		gameEng(init(G, i,j)) = G
 		classeType(init(G, i,j)) = MARCHEUR
 		direction(init(G, i,j)) = DROITE
-		enChute(init(G, i,j)) = 0
+		classeLemming != null
+		cumul = null
 		
 	[setClasseLemming]
-		x(setType(L, T)) = x(L)@pre
-		y(setType(L, T)) = y(L)@pre
-		enChute(setType(L, T)) = 0
-		direction(setType(L, T)) = direction(L)@pre
-		type(setType(L, T)) = T
+		x(setClasseLemming(L, T)) = x(L)@pre
+		y(setClasseLemming(L, T)) = y(L)@pre
+		direction(setClasseLemming(L, T)) = direction(L)@pre
+		classeType(setClasseLemming(L, T)) = classeLemming().getClasseType()
 		
 	[changeDirection]
 		x(changeDirection(L)) = x(L)@pre

@@ -9,11 +9,13 @@ public interface LemmingService {
 	int getY();
 	int getId();
 	Direction getDirection();
-	ActivityIF getClasseType();
-	Optional<ActivityIF> getCumul();
+	ClasseType getClasseType();
+	ActivityLemming getClasseLemming();
+	Optional<ActivityLemming> getCumul();
 	
 	// Invariants ----------------------------------------------------------
 	/**
+	 * env: gameEng().level().caseExiste(getX(), getY())
 	 * env: gameEng().level().getNature(x, y +1) = EMPTY
 	 * env: gameEng().level().getNature(x, y) = EMPTY
 	 */
@@ -29,19 +31,39 @@ public interface LemmingService {
 	 * post: getDirection = DROITE
 	 * post: getClasseType = MARCHEUR
 	 * post: getGameEng() = gameEng
-	 * post: enChute()= 0
+	 * post: getClasseLemming != null
+	 * post: getCumul() = null
 	 */
 	void init(GameEngService ges,int id, int x, int y);
 	
 	// Operators -----------------------------------------------------------
+	
 	/**
-	 * post: setClasseLemming(t).getClasseType = t
-	 * post: setClasseLemming(t).enChute() = 0
-	 * post: setClasseLemming(t).getX() = getX()@pre
-	 * post: setClasseLemming(t).getY() = getY()@pre
-	 * setClasseLemming(t).getDirection() = getDirection()@pre
+	 * pre: 0<= x && x < gameEng().getLevel().getWidh()
+	 * post: setX(x).getX() = x
 	 */
-	void setClasseLemming(ActivityIF cl);
+	void setX(int x);
+	
+	/**
+	 * pre: 0<= y && x < gameEng().getLevel().getHeight()
+	 * post: setY(y).getY() = y
+	 */
+	void setY(int y);
+	
+	/**
+	 * pre: cumulActivity != null
+	 * post: setCumul(cumulActivity).getCumul() = cumulActivity
+	 */
+	void setCumul(ActivityLemming cumulActivity);
+	
+	/**
+	 * post: setClasseLemming(activityLemming).getClasseType = activityLemming.getClasseType()
+	 * post: setClasseLemming(activityLemming).getClasseLemming = activityLemming
+	 * post: setClasseLemming(activityLemming).getX() = getX()@pre
+	 * post: setClasseLemming(activityLemming).getY() = getY()@pre
+	 * post: setClasseLemming(activityLemming).getDirection() = getDirection()@pre
+	 */
+	void setClasseLemming(ActivityLemming activityLemming);
 	
 	/**
 	 * post: if getDirection = GAUCHE then 
@@ -50,7 +72,6 @@ public interface LemmingService {
 	 * post: changeDirection().getX() = getX()@pre
 	 * post: changeDirection().getY() = getY()@pre
 	 * post: changeDirection().getClasseType() = getClasseType()@pre
-	 * post: enChute() = enChute()@pre			
 	 */
 	void changeDirection();
 	
@@ -58,7 +79,6 @@ public interface LemmingService {
 	 * pre: gameEng().isGameOver() = false
 	 * post:
 	 * if getClasseType(L) = MARCHEUR then :
-	 *		enChute() = enChute()@pre
 	 *		if isObstacle(L, getX(), getY()-1)  then :
 	 *			getClasseType() = getClasseType()@pre
 	 *			if isObstacle(getX()+1,getY()+1) || ( isObstacle(getX()+1, getY()) && isObstacle(getY()+1,getY()+2) ) then :
@@ -82,7 +102,7 @@ public interface LemmingService {
 	 *		if(isObstaclegetX(), getY()-1)) then :
 	 *			getY() = getY()@pre
 	 *			getClasseType() = MARCHEUR
-	 *			if enChute() >= 8 then :
+	 *			if enChute >= 8 then :
 	 *				L ∉ GameEng::lemmings(gameEng(L))
 	 *		else
 	 *			getY() = getY()@pre -1
@@ -122,7 +142,5 @@ public interface LemmingService {
 	 *				getX() = getX()@pre +1
 	  **/
 	void step();
-	void setX(int x);
-	void setY(int y);
-	void setCumul(ActivityIF cumul);
+	
 }

@@ -1,7 +1,6 @@
 package lemmings.services;
 
 import java.util.Collection;
-import java.util.Set;
 
 public interface GameEngService {
 	// Observators ---------------------------------------------------------
@@ -12,11 +11,11 @@ public interface GameEngService {
 	boolean isObstacle(int x, int y);
 	// pre: Level::caseExiste(x,y)
 	boolean isGameOver();
+	// pre: getLevel().isEditing() = false
 	int getScore();
 	// pre: isGameOver()
 	int getNbSauves();
 	int getNbCrees();
-	Set<Integer> getLemmings();
 	public Collection<LemmingService> lemmings();
 	boolean lemmingExiste(int id);
 	LemmingService getLemming(int id);
@@ -26,9 +25,9 @@ public interface GameEngService {
 	/**
 	 * inv: card(getLemmings()) <= getSizeColony()
 	 * inv: 0 <= nbSauves() < sizeColony()
-	 * inv: getScore() min= getNbSauves()/getSizeColony() * 100
-	 * inv: isObstacle(x,y) min= ¬(getLevel().nature(x,y) == EMPTY)
 	 * inv: getNbcrees() min= getTour() / getSpawnSpeed() 
+	 * inv: getScore() min= getNbSauves()/getNbCrees() * 100
+	 * inv: isObstacle(x,y) min= ¬(getLevel().nature(x,y) == EMPTY)
 	 * inv: isGameOver() min= (getNbCrees() == getSizeColony()) &&
 	 * 		(card(getLemmings()) == 0)
 	 */
@@ -44,23 +43,25 @@ public interface GameEngService {
 	 * post: getTour() = 0
 	 * post: getNbsauves() = 0
 	 * post: getNbCrees() = 0
-	 * post: getLemmings() = {}
+	 * post: lemmings() = {}
 	 */
 	void init(LevelService level,int size, int speed);
 	
 	// Operators -----------------------------------------------------------
 	/**
 	 * pre: lemmingExiste(id) 
-	 * post: supprimeLemming(id).getLemmings() = getLemmings()@pre / id
-	 * ∀ n ∈  getLemmings(G) / {num}, supprimeLemming(num).getLemming(n) = getLemming(n)
+	 * pre: gameOver() = false
+	 * post: supprimeLemming(id).lemmings() = lemmings()@pre / getLemming(id)
+	 * ∀ n ∈  getLemmings(G).id() / {num}, supprimeLemming(num).getLemming(n) = getLemming(n)
 	 */
 	void supprimeLemming(int id);
 	
 	/**
-	 * pre: ¬lemmingExiste(id)
+	 * pre: lemmingExiste(id) = false
 	 * pre: getLemmings().size() < getSizeColony()
+	 * pre: gameOver() = false
 	 * post: getNbCrees() = getNbCrees()@pre + 1
-	 * post: creeLemming(id,x,y).getLemmings() = getLemmings()@pre ⋃ {id}
+	 * post: creeLemming(id,x,y).lemmings() = getLemmings()@pre ⋃ {Lemming::init(id,x,y)}
 	 * post: if id = n then creeLemming(id,x,y).getLemming(n) = Lemming::init(id,x,y)
 	 * 		 else creeLemming(id,x,y).getLemming(n) = getLemming(n)
 	 */
@@ -68,9 +69,10 @@ public interface GameEngService {
 	
 	/**
 	 * pre: lemmingExiste(id)
+	 * pre: gameOver() = false
 	 * post: saveLemming(id).getNbSauves() = getNbSauves()@pre +1
-	 * post: saveLemming(id).getLemmings() = getLemmings()@pre / id
-	 * post: ∀ n ∈  getLemmings() / {num}, saveLemming(num).getLemming(n) = getLemming(n)
+	 * post: saveLemming(id).lemmings() = getLemmings()@pre / getLemming(id)
+	 * post: ∀ n ∈  lemmings().id() / {num}, saveLemming(num).getLemming(n) = getLemming(n)
 	 */
 	void saveLemming(int id);
 	
@@ -80,4 +82,11 @@ public interface GameEngService {
 	 */
 	void activeTour();
 	
+	/**
+	 * pre: isGameOver() = false
+	 * post: stopCreation().getTour() = getTour()@pre
+	 * post: stopCreation().getNbSauves() = getNbSauves()@pre
+	 * post: stopCreation().lemmings() = lemmings()@pre
+	 */
+	void stopCreation();
 }

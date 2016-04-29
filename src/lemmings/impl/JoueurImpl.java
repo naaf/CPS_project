@@ -2,7 +2,7 @@ package lemmings.impl;
 
 import java.util.HashMap;
 
-import lemmings.services.ActivityIF;
+import lemmings.services.ActivityLemming;
 import lemmings.services.ClasseType;
 import lemmings.services.GameEngService;
 import lemmings.services.JoueurService;
@@ -68,13 +68,15 @@ public class JoueurImpl implements
 
 	// Operators -----------------------------------------------------------
 	@Override
-	public void assignerClasse(ActivityIF cl, LemmingService l) {
-		if (cl.getTypeClasse() == ClasseType.EXPLOSEUR || cl.getTypeClasse() == ClasseType.FLOTTEUR) {
-			l.setCumul(cl);
-		} else {
-			l.setClasseLemming(cl);
-		}
+	public void assignerClasse(ActivityLemming cl, LemmingService l) {
+		l.setClasseLemming(cl);
 		classeTypes.computeIfPresent(cl.getTypeClasse(), (k, v) -> v - 1);
+	}
+
+	@Override
+	public void assignerCumul(ActivityLemming activity, LemmingService lm) {
+		lm.setCumul(activity);
+		classeTypes.computeIfPresent(activity.getTypeClasse(), (k, v) -> v - 1);
 	}
 
 	@Override
@@ -106,6 +108,14 @@ public class JoueurImpl implements
 				oldGrille[i][j] = l.getNature(i, j);
 			}
 		}
+	}
+
+	@Override
+	public void annihilation() {
+		gameEng.stopCreation();
+		gameEng.lemmings().forEach(l -> {
+			assignerClasse(new LemmingExploseur(), l);
+		});
 	}
 
 }

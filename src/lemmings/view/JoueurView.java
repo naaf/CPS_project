@@ -32,7 +32,7 @@ import lemmings.impl.LemmingMineur;
 import lemmings.impl.LemmingPelleur;
 import lemmings.impl.LemmingStoppeur;
 import lemmings.impl.LemmingTombeur;
-import lemmings.services.ActivityIF;
+import lemmings.services.ActivityLemming;
 import lemmings.services.ClasseType;
 import lemmings.services.GameEngService;
 import lemmings.services.LemmingService;
@@ -41,7 +41,7 @@ import lemmings.services.Nature;
 
 public class JoueurView {
 	public final static int CASE = 32;
-	public final static int L_WIDTH = 32;
+	public final static int L_WIDTH = 36;
 	public final static int WIDTH = CASE * L_WIDTH;
 	public final static int L_HEIGHT = 16;
 	public final static int HEIGHT = CASE * L_HEIGHT + 64;
@@ -63,7 +63,7 @@ public class JoueurView {
 		jc = jcnt;
 		gc = jc.getGameEng();
 		lc = gc.getLevel();
-		this.currentSelected = null;
+		this.currentSelected = Optional.ofNullable(null);
 		btns = new HashMap<>();
 		activeSprites = new HashMap<String, BufferedImage>();
 
@@ -81,6 +81,11 @@ public class JoueurView {
 		envButton.setPreferredSize(new Dimension(WIDTH, CASE));
 		JButton btnReset = new JButton("Reset");
 		btnReset.addActionListener(evt -> jc.reset());
+		hbox.add(btnReset);
+		btnReset = new JButton("Annihilation");
+		btnReset.addActionListener(evt -> {
+			jc.annihilation();
+		});
 		hbox.add(btnReset);
 		jc.getClasseTypes().entrySet().forEach(e -> {
 			JButton btn = new JButton(e.getKey().toString() + " " + e.getValue());
@@ -104,7 +109,11 @@ public class JoueurView {
 							.filter(l -> l.getX() == e.getX() / CASE && l.getY() == e.getY() / CASE).findFirst().get();
 					System.out.println("trouveLemming");
 					currentSelected.ifPresent(ct -> {
-						jc.assignerClasse(getActivity(ct), lm);
+						if (ct == ClasseType.EXPLOSEUR || ct == ClasseType.FLOTTEUR) {
+							jc.assignerCumul(getActivity(ct), lm);
+						} else {
+							jc.assignerClasse(getActivity(ct), lm);
+						}
 						btns.get(ct).setText(ct.toString() + " " + jc.getJetons(ct));
 
 					});
@@ -128,7 +137,7 @@ public class JoueurView {
 		envFrame.setVisible(true);
 	}
 
-	private ActivityIF getActivity(ClasseType ct) {
+	private ActivityLemming getActivity(ClasseType ct) {
 		switch (ct) {
 		case TOMBEUR:
 			return new LemmingTombeur();
@@ -150,7 +159,7 @@ public class JoueurView {
 			return new LemmingMineur();
 		case PELLEUR:
 			return new LemmingPelleur();
-		
+
 		}
 		return null;
 

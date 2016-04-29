@@ -1,7 +1,7 @@
 package lemmings.contracts;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import lemmings.decorators.GameEngDecorator;
 import lemmings.errors.Contractor;
@@ -15,13 +15,13 @@ public class GameEngContract extends GameEngDecorator {
 	private final String SERVICE = "GameEngService";
 
 	public void checkInvariant() {
-		if (getLemmings().size() > getSizeColony()) {
+		if (lemmings().size() > getSizeColony()) {
 			Contractor.defaultContractor().invariantError(SERVICE, "getLemmings().size() > getSizeColony()");
 		}
 		if (0 > getNbSauves() || getNbSauves() > getSizeColony()) {
 			Contractor.defaultContractor().invariantError(SERVICE, "0 > getNbSauves() > getSizeColony()");
 		}
-		if (isGameOver() != (getNbCrees() == getSizeColony()) && (getLemmings().size() == 0)) {
+		if (isGameOver() != (getNbCrees() == getSizeColony()) && (lemmings().size() == 0)) {
 			Contractor.defaultContractor().invariantError(SERVICE,
 					"isGameOver() != toute la colony est creer && il n'y a plus de lemmings active");
 		}
@@ -64,7 +64,10 @@ public class GameEngContract extends GameEngDecorator {
 		if (getNbSauves() != 0) {
 			Contractor.defaultContractor().postconditionError(SERVICE, "init", "getNbSauves() !=0");
 		}
-		if (getLemmings().size() != 0) {
+		if (getNbCrees() != 0) {
+			Contractor.defaultContractor().postconditionError(SERVICE, "init", "getNbCrees() != 0");
+		}
+		if (lemmings().size() != 0) {
 			Contractor.defaultContractor().postconditionError(SERVICE, "init", "card(getLemmings()) !=0 ");
 		}
 	}
@@ -98,6 +101,10 @@ public class GameEngContract extends GameEngDecorator {
 		int sc = super.getScore();
 		// inv post
 		checkInvariant();
+		// post
+		if (sc != (int) ((double) getNbSauves() / getSizeColony() * 100)) {
+			Contractor.defaultContractor().postconditionError(SERVICE, "getScore", "score incorrect ");
+		}
 
 		return sc;
 	}
@@ -106,8 +113,8 @@ public class GameEngContract extends GameEngDecorator {
 	public LemmingService getLemming(int id) {
 		// pre
 		if (!lemmingExiste(id)) {
-			Contractor.defaultContractor().preconditionError(SERVICE, "getLemming",
-					"lemmingExiste(" + id + ") == null");
+			Contractor.defaultContractor().preconditionError(SERVICE, "supprimeLemming",
+					"not lemmingExiste(" + id + ")");
 		}
 		// inv pre
 		checkInvariant();
@@ -115,6 +122,7 @@ public class GameEngContract extends GameEngDecorator {
 		LemmingService lm = super.getLemming(id);
 		// inv post
 		checkInvariant();
+		// post
 		return lm;
 	}
 
@@ -122,6 +130,9 @@ public class GameEngContract extends GameEngDecorator {
 	@Override
 	public void supprimeLemming(int id) {
 		// pre
+		if (isGameOver()) {
+			Contractor.defaultContractor().preconditionError(SERVICE, "activeTour", "isGameOver = true");
+		}
 		if (!lemmingExiste(id)) {
 			Contractor.defaultContractor().preconditionError(SERVICE, "supprimeLemming",
 					"not lemmingExiste(" + id + ")");
@@ -129,45 +140,43 @@ public class GameEngContract extends GameEngDecorator {
 		// inv pre
 		checkInvariant();
 		// Captures
-		Set<Integer> lemmings_at_pre = new HashSet<>();
-		lemmings_at_pre.addAll(getLemmings());
+		List<Integer> lemmings_at_pre = lemmings().stream().map(LemmingService::getId).collect(Collectors.toList());
 		// run
 		super.supprimeLemming(id);
 		// inv post
 		checkInvariant();
 		// post
-		if (getLemmings().contains(id)) {
+		if (lemmings().contains(id)) {
 			Contractor.defaultContractor().postconditionError(SERVICE, "supprimeLemming", "Lemming" + id + " existe");
 		}
-		lemmings_at_pre.stream().filter(num -> (num != id) && !getLemmings().contains(num))
+		lemmings_at_pre.stream().filter(num -> (num != id) && lemmings().stream().noneMatch(l -> l.getId() == num))
 				.forEach(num -> Contractor.defaultContractor().postconditionError(SERVICE, "supprimeLemming",
-						"getLemmings() a changé aussi en " + num));
-
+						"Lemming supprimé " + num + "!= (id) " + id));
 	}
 
 	@Override
 	public void creeLemming(int id, int x, int y) {
 		// pre
-		if (lemmingExiste(id)) {
-			Contractor.defaultContractor().preconditionError(SERVICE, "creeLemming", "lemming existe déjà");
+		if (isGameOver()) {
+			Contractor.defaultContractor().preconditionError(SERVICE, "activeTour", "isGameOver = true");
 		}
-		if (getLemmings().size() >= getSizeColony()) {
+		if (lemmings().size() >= getSizeColony()) {
 			Contractor.defaultContractor().preconditionError(SERVICE, "creeLemming",
 					"les nombre lemmings actives atteint son limite");
 		}
-		if (getLevel().isEditing()) {
-			Contractor.defaultContractor().preconditionError(SERVICE, "creerLemming", "isEditing = true");
+		if (lemmingExiste(id)) {
+			Contractor.defaultContractor().preconditionError(SERVICE, "creeLemming", "lemming existe déjà");
 		}
 		// inv pre
 		checkInvariant();
 		// Captures
-		int size_at_pre = getLemmings().size();
+		int size_at_pre = lemmings().size();
 		// run
 		super.creeLemming(id, x, y);
 		// inv post
 		checkInvariant();
 		// post
-		if (getLemmings().size() != size_at_pre + 1) {
+		if (lemmings().size() != size_at_pre + 1) {
 			Contractor.defaultContractor().postconditionError(SERVICE, "creeLemming", "getLemmings()@pre ⋃ {id}");
 		}
 		if (!lemmingExiste(id)) {
@@ -182,15 +191,15 @@ public class GameEngContract extends GameEngDecorator {
 		if (!lemmingExiste(id)) {
 			Contractor.defaultContractor().preconditionError(SERVICE, "saveLemming", "not lemmingExiste(" + id + ")");
 		}
-		if (getLevel().isEditing()) {
-			Contractor.defaultContractor().preconditionError(SERVICE, "saveLemming", "isEditing = true");
+		if (isGameOver()) {
+			Contractor.defaultContractor().preconditionError(SERVICE, "activeTour", "isGameOver = true");
 		}
 		// inv pre
 		checkInvariant();
 		// Captures
 		int sauves_at_pre = getNbSauves();
-		Set<Integer> lemmings_at_pre = new HashSet<>();
-		lemmings_at_pre.addAll(getLemmings());
+		List<Integer> lemmings_at_pre = lemmings().stream().map(LemmingService::getId).collect(Collectors.toList());
+
 		// run
 		super.saveLemming(id);
 		// inv post
@@ -200,9 +209,12 @@ public class GameEngContract extends GameEngDecorator {
 			Contractor.defaultContractor().postconditionError(SERVICE, "saveLemming",
 					"sauves_at_pre + 1 != getNbSauves()");
 		}
-		lemmings_at_pre.stream().filter(num -> (num != id) && !getLemmings().contains(num))
+		if (lemmings().contains(id)) {
+			Contractor.defaultContractor().postconditionError(SERVICE, "saveLemming", "Lemming" + id + " existe");
+		}
+		lemmings_at_pre.stream().filter(num -> (num != id) && lemmings().stream().noneMatch(l -> l.getId() == num))
 				.forEach(num -> Contractor.defaultContractor().postconditionError(SERVICE, "saveLemming",
-						"getLemmings() a changé aussi en " + num));
+						"Lemming sauvée " + num + "!= (id) " + id));
 	}
 
 	@Override
@@ -210,9 +222,6 @@ public class GameEngContract extends GameEngDecorator {
 		// pre
 		if (isGameOver()) {
 			Contractor.defaultContractor().preconditionError(SERVICE, "activeTour", "isGameOver = true");
-		}
-		if (getLevel().isEditing()) {
-			Contractor.defaultContractor().preconditionError(SERVICE, "activeTour", "isEditing = true");
 		}
 		// inv pre
 		checkInvariant();

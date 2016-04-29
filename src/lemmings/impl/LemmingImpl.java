@@ -2,7 +2,7 @@ package lemmings.impl;
 
 import java.util.Optional;
 
-import lemmings.services.ActivityIF;
+import lemmings.services.ActivityLemming;
 import lemmings.services.ClasseType;
 import lemmings.services.Direction;
 import lemmings.services.GameEngService;
@@ -21,9 +21,8 @@ public class LemmingImpl implements
 	private int x;
 	private int y;
 	private Direction direction;
-	private ClasseType classeType;
-	private ActivityIF lemmingClasse;
-	private ActivityIF cumul;
+	private ActivityLemming lemmingClasse;
+	private ActivityLemming cumul;
 
 	// Constructors -----------------------------------------------------------
 	public LemmingImpl() {
@@ -35,7 +34,6 @@ public class LemmingImpl implements
 		this.x = x;
 		this.y = y;
 		this.direction = Direction.DROITE;
-		this.classeType = ClasseType.MARCHEUR;
 		this.lemmingClasse = new LemmingMarcheur();
 		bindServiceGameEng(ges);
 	}
@@ -72,14 +70,14 @@ public class LemmingImpl implements
 	}
 
 	@Override
-	public ActivityIF getClasseType() {
+	public ActivityLemming getClasseLemming() {
 		return this.lemmingClasse;
 	}
 
 	// Operators ---------------------------------------------------------------
 
 	@Override
-	public void setClasseLemming(ActivityIF cl) {
+	public void setClasseLemming(ActivityLemming cl) {
 		this.lemmingClasse = cl;
 	}
 
@@ -102,13 +100,6 @@ public class LemmingImpl implements
 	}
 
 	@Override
-	public String toString() {
-		return "LemmingImpl [gEng=" + gEng + ", id=" + id + ", x=" + x + ", y=" + y + ", direction=" + direction
-				+ ", classeType=" + classeType + "]";
-	}
-
-
-	@Override
 	public void setX(int x) {
 		this.x = x;
 	}
@@ -119,13 +110,18 @@ public class LemmingImpl implements
 	}
 	
 	@Override
-	public Optional<ActivityIF> getCumul() {
+	public Optional<ActivityLemming> getCumul() {
 		return Optional.ofNullable(cumul);
 	}
 	
 	@Override
-	public void setCumul(ActivityIF cumul) {
+	public void setCumul(ActivityLemming cumul) {
 		this.cumul = cumul;
+	}
+
+	@Override
+	public ClasseType getClasseType() {
+		return lemmingClasse.getTypeClasse();
 	}
 	
 	

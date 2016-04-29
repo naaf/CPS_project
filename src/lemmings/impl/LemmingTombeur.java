@@ -1,10 +1,10 @@
 package lemmings.impl;
 
-import lemmings.services.ActivityIF;
+import lemmings.services.ActivityLemming;
 import lemmings.services.ClasseType;
 import lemmings.services.LemmingService;
 
-public class LemmingTombeur implements ActivityIF {
+public class LemmingTombeur implements ActivityLemming {
 	private static final int LIMITE_CHUTE = 8;
 	private int chute;
 

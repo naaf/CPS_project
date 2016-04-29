@@ -1,11 +1,11 @@
 package lemmings.impl;
 
-import lemmings.services.ActivityIF;
+import lemmings.services.ActivityLemming;
 import lemmings.services.ClasseType;
 import lemmings.services.Direction;
 import lemmings.services.LemmingService;
 
-public class LemmingConstructeur implements ActivityIF {
+public class LemmingConstructeur implements ActivityLemming {
 	private int attente;
 	private int nbDalle;
 	private static final int LIMITE_DALLE = 12;
@@ -29,10 +29,20 @@ public class LemmingConstructeur implements ActivityIF {
 				}
 			}
 			if (attente == ATTENTE_TOUR) {
+
+				if (lm.gameEng().lemmings().stream().anyMatch(l -> {
+					for (int i = 1; i <= 3; i++) {
+						if (l.getX() == lm.getX() + i * sens && (l.getY() == lm.getY() || l.getY() - 1 == lm.getY()))
+							return true;
+					}
+					return false;
+				})) {
+					return;
+				}
+
 				for (int i = 1; i <= 3; i++) {
 					lm.gameEng().getLevel().build(lm.getX() + i * sens, lm.getY());
 				}
-
 				lm.setY(lm.getY() - 1);
 				lm.setX(lm.getX() + 2 * (sens));
 				nbDalle += 3;
