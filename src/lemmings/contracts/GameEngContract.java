@@ -218,7 +218,7 @@ public class GameEngContract extends GameEngDecorator {
 	}
 
 	@Override
-	public void activeTour() {
+	public void runTour() {
 		// pre
 		if (isGameOver()) {
 			Contractor.defaultContractor().preconditionError(SERVICE, "activeTour", "isGameOver = true");
@@ -228,7 +228,7 @@ public class GameEngContract extends GameEngDecorator {
 		// Captures
 		int tour_at_pre = getTour();
 		// run
-		super.activeTour();
+		super.runTour();
 		// inv post
 		checkInvariant();
 		// post

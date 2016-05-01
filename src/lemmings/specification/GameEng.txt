@@ -23,8 +23,8 @@ Constructors :
 	init : Level * int * int -> [GameEng]
 		pre : init(L,size,speed) require size > 0 ^ speed > 0 ^ L != null
 Operators
-	activeTour : [GameEng] -> GameEng
-		pre activeTour(G) require
+	runTour : [GameEng] -> GameEng
+		pre runTour(G) require
 		^ ¬gameOver(G)
 		
 	supprimeLemming : [GameEng] * int -> GameEng
@@ -87,8 +87,8 @@ Observations :
 		lemmings(saveLemming(G, id)) = lemmings(G)@pre / getLemming(G,id)
 		∀ n ∈ Lemming::id(lemmings()) / {num}, getLemming(saveLemming(G,num),n) = getLemming(G,n)
 		
-	[activeTour]
-		tour(activeTour(G)) = tour(G)@pre + 1
+	[runTour]
+		tour(runTour(G)) = tour(G)@pre + 1
 	
 	[stopCreation]
 		nbCrees(stopCreation(G)) = sizeColony

@@ -44,7 +44,7 @@ public class JoueurView {
 	public final static int L_WIDTH = 36;
 	public final static int WIDTH = CASE * L_WIDTH;
 	public final static int L_HEIGHT = 16;
-	public final static int HEIGHT = CASE * L_HEIGHT + 64;
+	public final static int HEIGHT = CASE * L_HEIGHT + 96;
 	private final String LEMMING_IMG = "robot";
 	private final String ENTRANCE_IMG = "ENTRANCE";
 	private final String EXIT_IMG = "EXIT";
@@ -73,12 +73,15 @@ public class JoueurView {
 		Container contentPane = envFrame.getContentPane();
 		Box vbox = Box.createVerticalBox();
 		envLevel = new EnvPanel();
+		Box vbtn = Box.createVerticalBox();
 		Box hbox = Box.createHorizontalBox();
+		Box hbox1 = Box.createHorizontalBox();
+
 		envButton = new JPanel();
 		loadSprite();
 		/** env Button **/
 		envLevel.setPreferredSize(new Dimension(WIDTH, L_HEIGHT * CASE));
-		envButton.setPreferredSize(new Dimension(WIDTH, CASE));
+		envButton.setPreferredSize(new Dimension(WIDTH, CASE * 2));
 		JButton btnReset = new JButton("Reset");
 		btnReset.addActionListener(evt -> jc.reset());
 		hbox.add(btnReset);
@@ -128,7 +131,10 @@ public class JoueurView {
 		envLevel.setBackground(Color.WHITE);
 
 		/** bind env on window **/
-		envButton.add(hbox);
+
+		vbtn.add(hbox);
+		vbtn.add(hbox1);
+		envButton.add(vbtn);
 		vbox.add(envLevel);
 		vbox.add(envButton);
 		contentPane.add(vbox);

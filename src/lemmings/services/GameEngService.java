@@ -78,9 +78,9 @@ public interface GameEngService {
 	
 	/**
 	 * pre: isGameOver() = false
-	 * post: activeTour().getTour() = getTour()@pre + 1
+	 * post: runTour().getTour() = getTour()@pre + 1
 	 */
-	void activeTour();
+	void runTour();
 	
 	/**
 	 * pre: isGameOver() = false

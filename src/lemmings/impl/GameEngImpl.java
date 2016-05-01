@@ -25,7 +25,6 @@ public class GameEngImpl implements
 	private int tour;
 	private int nbSauves;
 	private int nbCree;
-	private boolean annihilation;
 	private Map<Integer, LemmingService> lemmings;
 
 	// Constructors --------------------------------------------------------
@@ -40,7 +39,6 @@ public class GameEngImpl implements
 		this.nbSauves = 0;
 		this.nbCree = 0;
 		this.lemmings = new ConcurrentHashMap<>();
-		annihilation = false;
 		bindLevelService(level);
 	}
 
@@ -134,10 +132,10 @@ public class GameEngImpl implements
 	}
 
 	@Override
-	public void activeTour() {
+	public void runTour() {
 		lemmings.entrySet().forEach(l -> l.getValue().step());
 		tour = tour + 1;
-		if (tour % spawnSpeed == 0 && nbCree < sizeColony && !annihilation) {
+		if (tour % spawnSpeed == 0 && nbCree < sizeColony) {
 			creeLemming(nbCree, level.entranceX(), level.entranceY());
 			System.out.println("creation lemming " + nbCree);
 			nbCree++;

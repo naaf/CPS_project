@@ -11,10 +11,13 @@ import lemmings.view.JoueurView;
 
 public class ViewTest {
 	public static void main(String[] args) {
+		
+		/** Level initialisation **/
 		LevelContract lc = new LevelContract(new LevelImpl());
 		lc.init(JoueurView.L_WIDTH, JoueurView.L_HEIGHT);
+		// 
 		for (int i = 0; i < JoueurView.L_WIDTH; i++) {
-			lc.setNature(i, 6, Nature.DIRTY);
+			lc.setNature(i, 6, Nature.DIRTY); 
 			lc.setNature(i, 7, Nature.DIRTY);
 			lc.setNature(i, 8, Nature.DIRTY);
 		}
@@ -47,7 +50,7 @@ public class ViewTest {
 		
 		jc.startGame();
 		while (!gc.isGameOver()) {
-			gc.activeTour();
+			gc.runTour();
 			System.out.println("tour " + gc.getTour());
 			try {
 				Thread.sleep(250);
@@ -57,6 +60,6 @@ public class ViewTest {
 			jv.repain();
 
 		}
-		System.out.println(gc.getNbSauves() + ",fin Partie " + gc.getScore());
+		System.out.println(gc.getNbSauves() + ",fin Partie score " + gc.getScore() + "%");
 	}
 }

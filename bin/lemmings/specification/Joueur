@@ -47,6 +47,7 @@ Observations:
 		∀ c1,c2 ∈ classeTypes(); c1 != c2; getJetons(assignerClasse(J, c1, l), c2) = getJetons(J,c2)
 	
 	[startGame]
+		gameOver(J) = false
 		
 	[reset]
 		gameEng(reset(J)) = GameEng::init(gameEng().level(), gameEng().sizeColony(), gameEng().spawnSeep())
@@ -55,5 +56,6 @@ Observations:
 	
 			
 	[annihilation]
+		gameOver(J) = true
 		
 		

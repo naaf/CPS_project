@@ -18,7 +18,7 @@ public class LemmingTest {
 		jc.init(gc, 12);
 		
 		while(!gc.isGameOver()){
-			gc.activeTour();
+			gc.runTour();
 			System.out.println("tour " + gc.getTour());
 		}
 	}

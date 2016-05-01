@@ -101,8 +101,8 @@ public class GameEngDecorator implements GameEngService {
 	}
 
 	@Override
-	public void activeTour() {
-		delegate.activeTour();		
+	public void runTour() {
+		delegate.runTour();		
 	}
 
 
