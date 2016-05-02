@@ -8,6 +8,14 @@ public interface LemmingService {
 	int getId();
 	Direction getDirection();
 	ClasseType getClasseType();
+	int enChute();
+	boolean estFlotteur();
+	boolean estExploseur();
+	boolean estGrimpeur();
+	int attenteConstruction();
+	int attenteExplosion();
+	int nbDalle();
+	int nbCasse();
 
 	
 	// Invariants ----------------------------------------------------------
@@ -19,17 +27,23 @@ public interface LemmingService {
 	
 	// Constructors --------------------------------------------------------
 	/**
-	 * pre: ges != NULL
+	 * pre: ges != null
 	 * pre: ges.level().caseExiste(x,y)
 	 * pre: ges.level().getNature(x, y) = EMPTY
 	 * pre: gameEng()::level().getNature(x, y +1) = EMPTY
+	 * post: getGameEng() = gameEng
 	 * post: getX() = x
 	 * post: getY() = y
 	 * post: getDirection = DROITE
 	 * post: getClasseType = MARCHEUR
-	 * post: getGameEng() = gameEng
-	 * post: getClasseLemming != null
-	 * post: getCumul() = null
+	 * post: estFlotteur() = false
+	 * post: estExploseur() = false
+	 * post: estGrimpeur() = false
+	 * post: enChute() = 0
+	 * post: attenteConstruction() = 0
+	 * post: attenteExplosion()  = 0
+	 * post: nbDalle() = 0
+	 * post: nbCasse() = 0
 	 */
 	void init(GameEngService ges,int id, int x, int y);
 	
@@ -38,29 +52,88 @@ public interface LemmingService {
 	
 	
 	/**
-	 * post: setClasseLemming(activityLemming).getClasseType = activityLemming.getClasseType()
-	 * post: setClasseLemming(activityLemming).getClasseLemming = activityLemming
-	 * post: setClasseLemming(activityLemming).getX() = getX()@pre
-	 * post: setClasseLemming(activityLemming).getY() = getY()@pre
-	 * post: setClasseLemming(activityLemming).getDirection() = getDirection()@pre
+	 * post: getX() = getX()@pre
+	 * post: getY() = getY()@pre
+	 * post: getDirection() = getDirection()@pre
+	 * post: getClasseType() = classeType
+	 * post: estFlotteur() = estFlotteur()@pre
+	 * post: estExploseur() = estExploseur()@pre
+	 * post: estGrimpeur() = estGrimpeur()@pre 
+	 * post: enChute() = 0
+	 * post: attenteConstruction() = 0
+	 * post: attenteExplosion()  = attenteExplosion()@pre 
+	 * post: nbDalle() = 0
+	 * post: nbCasse() = 0
 	 */
 	void setClasseType(ClasseType classeType);
 	
 	/**
+	 * post: getX() = getX()@pre
+	 * post: getY() = getY()@pre
 	 * post: if getDirection = GAUCHE then 
 	 * 			changeDirection().getDirextion = DROITE
-	 * 		else changeDirection().getDirextion = GAUCHE
-	 * post: changeDirection().getX() = getX()@pre
-	 * post: changeDirection().getY() = getY()@pre
-	 * post: changeDirection().getClasseType() = getClasseType()@pre
+	 * 		 else changeDirection().getDirextion = GAUCHE
+	 * post: getClasseType() = getClasseType()@pre
+	 * post: estFlotteur() = estFlotteur()@pre
+	 * post: estExploseur() = estExploseur()@pre
+	 * post: estGrimpeur() = estGrimpeur()@pre 
+	 * post: enChute() = enChute()@pre
+	 * post: attenteConstruction() = attenteConstruction()@pre
+	 * post: attenteExplosion()  = attenteExplosion()@pre
+	 * post: nbDalle() = nbDalle()@pre
+	 * post: nbCasse() = nbCasse()@pre
 	 */
 	void changeDirection();
 	
-	public void setFlotteur(boolean flotteur) ;
-	public void setEstGrimpeur(boolean estGrimpeur);
-	void setExploseur(boolean ex);
 	/**
-	 * pre: gameEng().isGameOver() = false
+	 * post: getX() = getX()@pre
+	 * post: getY() = getY()@pre
+	 * post: getDirection() = getDirection()@pre
+	 * post: getClasseType() = getClasseType()@pre
+	 * post: estFlotteur() = flotteur
+	 * post: estExploseur() = estExploseur()@pre
+	 * post: estGrimpeur() = estGrimpeur()@pre 
+	 * post: enChute() = enChute()@pre
+	 * post: attenteConstruction() = attenteConstruction()@pre
+	 * post: attenteExplosion()  = attenteExplosion()@pre
+	 * post: nbDalle() = nbDalle()@pre
+	 * post: nbCasse() = nbCasse()@pre
+	 */
+	public void setFlotteur(boolean flotteur) ;
+	
+	/**
+	 * post: getX() = getX()@pre
+	 * post: getY() = getY()@pre
+	 * post: getDirection() = getDirection()@pre
+	 * post: getClasseType() = getClasseType()@pre
+	 * post: estFlotteur() = estFlotteur()@pre
+	 * post: estExploseur() = estExploseur()@pre
+	 * post: estGrimpeur() = estGrimpeur
+	 * post: enChute() = enChute()@pre
+	 * post: attenteConstruction() = attenteConstruction()@pre
+	 * post: attenteExplosion()  = attenteExplosion()@pre
+	 * post: nbDalle() = nbDalle()@pre
+	 * post: nbCasse() = nbCasse()@pre
+	 */
+	public void setEstGrimpeur(boolean estGrimpeur);
+	
+	/**
+	 * post: getX() = getX()@pre
+	 * post: getY() = getY()@pre
+	 * post: getDirection() = getDirection()@pre
+	 * post: getClasseType() = getClasseType()@pre
+	 * post: estFlotteur() = estFlotteur()@pre
+	 * post: estExploseur() = ex
+	 * post: estGrimpeur() = estGrimpeur()@pre
+	 * post: enChute() = enChute()@pre
+	 * post: attenteConstruction() = attenteConstruction()@pre
+	 * post: attenteExplosion()  = 0
+	 * post: nbDalle() = nbDalle()@pre
+	 * post: nbCasse() = nbCasse()@pre
+	 */
+	void setExploseur(boolean ex);
+	
+	/**
 	 * post:
 	 * if getClasseType(L) = MARCHEUR then :
 	 *		if isObstacle(L, getX(), getY()-1)  then :
@@ -78,12 +151,20 @@ public interface LemmingService {
 	 *					getY() = getY()@pre
 	 *		else
 	 *			getClasseType() = TOMBEUR
+	 *		 estFlotteur() = estFlotteur()@pre
+	 * 		 estExploseur() = estExploseur()@pre
+	 * 		 estGrimpeur() = estGrimpeur()@pre
+	 * 		 attenteConstruction() = attenteConstruction()@pre
+	 * 		 attenteExplosion()  = attenteExplosion()@pre
+	 * 		 nbDalle() = nbDalle()@pre
+	 * 		 nbCasse() = nbCasse()@pre
 	 *			
 	 *			
 	 *	else if getClasseType() = TOMBEUR then :
 	 *		getX() = getX()@pre
 	 *		getDirection() = getDirection()@pre
 	 *		if(isObstaclegetX(), getY()-1)) then :
+	 *			estFlotteur() = false
 	 *			getY() = getY()@pre
 	 *			getClasseType() = MARCHEUR
 	 *			if enChute >= 8 then :
@@ -92,6 +173,13 @@ public interface LemmingService {
 	 *			getY() = getY()@pre -1
 	 *			getClasseType() = getClasseType()@pre
 	 *			enChute() = enChute()@pre +1
+	 * 		 	estFlotteur() = estFlotteur()@pre
+	 * 		 estExploseur() = estExploseur()@pre
+	 * 		 estGrimpeur() = estGrimpeur()@pre
+	 * 		 attenteConstruction() = attenteConstruction()@pre
+	 * 		 attenteExplosion()  = attenteExplosion()@pre
+	 * 		 nbDalle() = nbDalle()@pre
+	 * 		 nbCasse() = nbCasse()@pre
 	 *			
 	 *	else if classeType(L) = CREUSEUR then :
 	 *		getX() = getX()@pre
@@ -106,9 +194,16 @@ public interface LemmingService {
 	 *		else
 	 *			getY() = getY()@pre
 	 *			getClasseType() = TOMBEUR
+	 *		 enChute() = enChute()@pre
+	 *		 estFlotteur() = estFlotteur()@pre
+	 * 		 estExploseur() = estExploseur()@pre
+	 * 		 estGrimpeur() = estGrimpeur()@pre
+	 * 		 attenteConstruction() = attenteConstruction()@pre
+	 * 		 attenteExplosion()  = attenteExplosion()@pre
+	 * 		 nbDalle() = nbDalle()@pre
+	 * 		 nbCasse() = nbCasse()@pre
      *	
-     *	else if (getClasseType() = GRIMPEUR) then :
-     *			
+     *	else if (estGrimpeur()) then :
 	 *		if isObstacle(L,getX()+1,getY()) && isObstacle(getX()+1,getY()-1) &&
 	 *			¬isObstacle(getX(), getY()+2) then :
 	 *			getDirection() = getDirection()@pre
@@ -124,10 +219,18 @@ public interface LemmingService {
 	 *				getClasseType() = MARCHEUR
 	 *				getY() = getY()@pre -1
 	 *				getX() = getX()@pre +1
-	 *
+	 *		enChute() = enChute()@pre
+	 *		estFlotteur() = estFlotteur()@pre
+	 * 		estExploseur() = estExploseur()@pre
+	 * 		estGrimpeur() = estGrimpeur()@pre
+	 * 		attenteConstruction() = attenteConstruction()@pre
+	 * 		attenteExplosion()  = attenteExplosion()@pre
+	 * 		nbDalle() = nbDalle()@pre
+	 * 		nbCasse() = nbCasse()@pre
+	 * 
 	 * else if(getClasseType() = CONSTRUCTEUR) then :
+	 * 
 	 * else if(getClasseType() = STOPPEUR) then :
-	 * 		getCumul() = getCumul()@pre
 	 *		getDirection() = getDirection()@pre	
 	 *		if ¬obstacle( getX(), getY()-1)  then :
  	 *			getClasseType() = TOMBEUR
@@ -136,16 +239,31 @@ public interface LemmingService {
 	 *		y(L) = y(L)@pre
 	 *		x(L) = x(L)@pre
 	 *		direction(L) = direction(L)@pre
-	 * else if(getClasseType() = FLOTTEUR) then :
-	 * 		getCumul() = FLOTTEUR
+	 *		enChute() = enChute()@pre
+	 *		estFlotteur() = estFlotteur()@pre
+	 * 		estExploseur() = estExploseur()@pre
+	 * 		estGrimpeur() = estGrimpeur()@pre
+	 * 		attenteConstruction() = attenteConstruction()@pre
+	 * 		attenteExplosion()  = attenteExplosion()@pre
+	 * 		nbDalle() = nbDalle()@pre
+	 * 		nbCasse() = nbCasse()@pre
+	 * 
+	 * else if(estFlotteur()) then :
 	 * 		getClasseType() = getClasseType()@pre
 	 *		getDirection() = getDirection(L)@pre
 	 *		getY() = getY()@pre
 	 *		getX() = getX()@pre
+	 *		enChute() = enChute()@pre
+	 *		estFlotteur() = estFlotteur()@pre
+	 * 		estExploseur() = estExploseur()@pre
+	 * 		estGrimpeur() = estGrimpeur()@pre
+	 * 		attenteConstruction() = attenteConstruction()@pre
+	 * 		attenteExplosion()  = attenteExplosion()@pre
+	 * 		nbDalle() = nbDalle()@pre
+	 * 		nbCasse() = nbCasse()@pre
 	 * 
-	 * else if(getClasseType() = EXPLOSEUR) then :
-	 * 		cumul(L) = EXPLOSEUR
-	 *		if  gameEng().getTout() = GameEng().getTour()@pre + 5
+	 * else if(estExploseur()) then :
+	 *		if  attenteExplosion = 5 then
 	 *			L ∉ gameEng().lemmings()
 	 *			∀(x,y) x ∈ { getX()-2, ..., getX()+2} et y ∈ { getY()-1, ..., getY()+1}
 	 *				if gameEng().getLevel().getNature( x, y) != METAL
@@ -157,24 +275,43 @@ public interface LemmingService {
 	 *					l ∉ gameEng().lemmings()
 	 *				else
 	 *					l ∈ gameEng().lemmings()
+	 *		 else
+	 * 			attenteExplosion()  = attenteExplosion()@pre +1
+	 * 		enChute() = enChute()@pre
+	 *		estFlotteur() = estFlotteur()@pre
+	 * 		estExploseur() = estExploseur()@pre
+	 * 		estGrimpeur() = estGrimpeur()@pre
+	 * 		attenteConstruction() = attenteConstruction()@pre
+	 * 		nbDalle() = nbDalle()@pre
+	 * 		nbCasse() = nbCasse()@pre
 	 * 
 	 * else if(getClasseType() = PELLETEUR) then :
 	 * 		getCumul() = getCumul()@pre
 	 *		if isObstacle(getX(), getYy()+1)  then :		
 	 *			if gameEng().getLevel().getNature(getX()+1, getY()) = DIRTY &&
 	 *			   gameEng().getLevel().getNature(getX()+1, getY() +1) = DIRTY && 
-	 *			   gameEng().getLevel().getNature(getX()+1, getY() +2) = DIRTY then :
+	 *			   gameEng().getLevel().getNature(getX()+1, getY() +2) = DIRTY &&
+	 *				nbCasse() < 12 then :
 	 *					getClasseType() = PELLETEUR
 	 *					gameEng().getLevel().getNature(getX()+1, getY()) = EMPTY 
 	 *			  		gameEng().getLevel().getNature(getX()+1, getY()+1) = EMPTY 
 	 *			   		gameEng().getLevel().getNature(getX()+1, getY()+2) = EMPTY 
+	 *					nbCasse() = nbCasse()@pre +3
 	 *			else
 	 *				getClasseType() = MARCHEUR
+	 *				nbCasse() = 0
 	 *		else
 	 *			getClasseType() = TOMBEUR	
+	 *		attenteExplosion()  = attenteExplosion()@pre
+	 * 		enChute() = enChute()@pre
+	 *		estFlotteur() = estFlotteur()@pre
+	 * 		estExploseur() = estExploseur()@pre
+	 * 		estGrimpeur() = estGrimpeur()@pre
+	 * 		attenteConstruction() = attenteConstruction()@pre
+	 * 		nbDalle() = nbDalle()@pre
+	 * 		
 	 * 
 	 * else if(getClasseType() = MINEUR) then :
-	 * 		getCumul() = getCumul()@pre
 	 * 		if ¬isObstacle(getX(), getY() -1) then :
 	 * 			if gameEng().getLevel().getNature(getX() +1, getY() +1) != METAL && 
 	 * 			   gameEng().getLevel().getNature(getX() +1, getY() +2) != METAL then :
@@ -195,6 +332,14 @@ public interface LemmingService {
 	 *					getClasseType() = MARCHEUR
 	 *		else
 	 *			getClasseType() = TOMBEUR
+	 *		attenteExplosion()  = attenteExplosion()@pre
+	 * 		enChute() = enChute()@pre
+	 *		estFlotteur() = estFlotteur()@pre
+	 * 		estExploseur() = estExploseur()@pre
+	 * 		estGrimpeur() = estGrimpeur()@pre
+	 * 		attenteConstruction() = attenteConstruction()@pre
+	 * 		nbDalle() = nbDalle()@pre
+	 * 		nbCasse() = nbCasse()@pre
 	 * 	
 	  **/
 	void step();

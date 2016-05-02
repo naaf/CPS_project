@@ -164,7 +164,7 @@ Observations :
 			nbDalle(step(L)) = nbDalle(L)@pre
 			nbCasse(step(L)) = nbCasse(L)@pre	
 			
-		else if (classeType(L) = GRIMPEUR) then :
+		else if (estGrimpeur(step(L))) then :
 			if obstacle(L,x(L)+1,y(L)) && obstacle(L,x(L)+1,y(L)+1) &&
 				¬obstacle(L, x(L), y(L)+2) then :
 				direction(step(L)) = direction(L)@pre
@@ -210,7 +210,7 @@ Observations :
 				   		nbCasse(step(L)) = nbCasse(L)@pre + 3
 				else
 					classeType(step(L)) = MARCHEUR
-					nbCasse(step(L)) = nbCasse(L)@pre
+					nbCasse(step(L)) = 0
 			else
 				classeType(step(L)) = TOMBEUR	
 				nbCasse(step(L)) = nbCasse(L)@pre
@@ -300,5 +300,11 @@ Observations :
 						classeType(step(L)) = MARCHEUR
 			else
 				classeType(step(L)) = TOMBEUR
+			estFlotteur(step(L)) = estFlotteur(L)@pre
+			estExploseur(step(L)) = estExploseur(L)@pre
+			attenteConstruction(step(L)) = attenteConstruction(L)@pre
+			attenteExplosion(step(L))  = attenteExplosion(L)@pre
+			nbDalle(step(L)) = nbDalle(L)@pre
+			nbCasse(step(L)) = nbCasse(L)@pre	
 		
 			

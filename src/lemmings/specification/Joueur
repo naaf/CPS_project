@@ -23,7 +23,7 @@ Operators:
 	reset : [Joueur] -> Joueur
 		pre: reset(J) require ¬GameEng::gameOver
 		
-	startGame : [Joueur] --> Joueur
+	startGame : [Joueur] -> Joueur
 		pre: startGame(J) require ¬GameEng::gameOver
 		
 	annihilation : [Joueur] -> Joueur

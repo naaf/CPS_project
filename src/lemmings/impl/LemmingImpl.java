@@ -86,8 +86,49 @@ public class LemmingImpl implements
 	public Direction getDirection() {
 		return this.direction;
 	}
+	
 
 	// Operators ---------------------------------------------------------------
+
+	@Override
+	public int enChute() {
+		return enchute;
+	}
+
+	@Override
+	public boolean estFlotteur() {
+		return estFlotteur;
+	}
+
+	@Override
+	public boolean estExploseur() {
+		return estExploseur;
+	}
+
+	@Override
+	public boolean estGrimpeur() {
+		return estGrimpeur;
+	}
+
+	@Override
+	public int attenteConstruction() {
+		return attenteConstruction;
+	}
+
+	@Override
+	public int attenteExplosion() {
+		return attenteExplosion;
+	}
+
+	@Override
+	public int nbDalle() {
+		return nbDalle;
+	}
+
+	@Override
+	public int nbCasse() {
+		return nbCasse;
+	}
 
 	@Override
 	public void setClasseType(ClasseType classeType) {
@@ -125,6 +166,13 @@ public class LemmingImpl implements
 			gEng.saveLemming(id);
 			return;
 		}
+		if(classeType == ClasseType.PELLETEUR){
+			pelleteur();
+		}
+		else if (estGrimpeur){
+			if(grimpeur())
+				return;
+		}
 		switch (classeType) {
 		case MARCHEUR:
 			marcheur();
@@ -138,9 +186,6 @@ public class LemmingImpl implements
 		case CREUSEUR:
 			creuseur();
 			break;
-		case PELLETEUR:
-			pelleteur();
-			break;
 		case MINEUR:
 			mineur();
 			break;
@@ -152,8 +197,7 @@ public class LemmingImpl implements
 
 		if (estExploseur)
 			exploseur();
-		if (estGrimpeur)
-			grimpeur();
+		
 	}
 
 	@Override
@@ -186,6 +230,7 @@ public class LemmingImpl implements
 			if (enchute >= LIMITE_CHUTE && !estFlotteur) {
 				gameEng().supprimeLemming(getId());
 			}
+			estFlotteur = false;
 			setClasseType(ClasseType.MARCHEUR);
 		} else {
 			if (estFlotteur) {
@@ -197,25 +242,27 @@ public class LemmingImpl implements
 		}
 	}
 
-	private void grimpeur() {
+	private boolean grimpeur() {
 		int sens = (getDirection() == Direction.DROITE) ? 1 : -1;
-		if (!gameEng().isObstacle(getX(), getY() + 1)) {
-			setClasseType(ClasseType.TOMBEUR);
-		}
-		if (!gameEng().isObstacle(getX(), getY() - 1) && gameEng().isObstacle(getX() + sens, getY())) {
-			if (!gameEng().isObstacle(getX(), getY() - 2) && gameEng().isObstacle(getX() + sens, getY() - 1)) {
-				y = y - 1;
-			} else if (!gameEng().isObstacle(getX() + sens, getY() - 1)
-					&& !gameEng().isObstacle(getX() + sens, getY() - 2)) {
-				y = getY() - 1;
-				x = getX() + sens;
-			} else {
-				setClasseType(ClasseType.MARCHEUR);
+		if(classeType == ClasseType.TOMBEUR){
+			if (gameEng().isObstacle(getX(), getY() + 1)) {
+				 if (gameEng().isObstacle(getX() + sens, getY() - 1) || (gameEng().isObstacle(getX() + sens, getY())
+						&& gameEng().isObstacle(getX() + sens, getY() - 2))) {
+					changeDirection();
+				}
 			}
-		} else {
-			setClasseType(ClasseType.MARCHEUR);
+			return false;
 		}
-
+		if (!gameEng().isObstacle(getX(), getY() - 2) && gameEng().isObstacle(getX() + sens, getY())) {
+			if(gameEng().isObstacle(getX() + sens, getY()-1))
+				y = y - 1;
+			else if(!gameEng().isObstacle(getX() + sens, getY()-1) && !gameEng().isObstacle(getX() + sens, getY()-2)){
+				y = y - 1;
+				x +=sens;
+			}
+				return true;
+		}
+		return false;
 	}
 
 	private void creuseur() {

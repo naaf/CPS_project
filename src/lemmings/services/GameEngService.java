@@ -28,8 +28,8 @@ public interface GameEngService {
 	 * inv: getNbcrees() min= getTour() / getSpawnSpeed() 
 	 * inv: getScore() min= getNbSauves()/getNbCrees() * 100
 	 * inv: isObstacle(x,y) min= ¬(getLevel().nature(x,y) == EMPTY)
-	 * inv: isGameOver() min= (getNbCrees() == getSizeColony()) &&
-	 * 		(card(getLemmings()) == 0)
+	 * inv: isGameOver() min= (getNbCrees() == getSizeColony()) &&(card(getLemmings()) == 0)
+	 * inv: lemmingExiste(id) min= (getLemming(id) != null)
 	 */
 	
 	// Constructors --------------------------------------------------------
@@ -52,7 +52,9 @@ public interface GameEngService {
 	 * pre: lemmingExiste(id) 
 	 * pre: gameOver() = false
 	 * post: supprimeLemming(id).lemmings() = lemmings()@pre / getLemming(id)
+	 * post: supprimeLemming(id).getLemming(id) = null
 	 * ∀ n ∈  getLemmings(G).id() / {num}, supprimeLemming(num).getLemming(n) = getLemming(n)
+	 * supprimeLemming(id).getTour() = getTour()@pre
 	 */
 	void supprimeLemming(int id);
 	
@@ -64,6 +66,7 @@ public interface GameEngService {
 	 * post: creeLemming(id,x,y).lemmings() = getLemmings()@pre ⋃ {Lemming::init(id,x,y)}
 	 * post: if id = n then creeLemming(id,x,y).getLemming(n) = Lemming::init(id,x,y)
 	 * 		 else creeLemming(id,x,y).getLemming(n) = getLemming(n)
+	 * post: getTour() = getTour()@pre
 	 */
 	void creeLemming(int id, int x, int y);
 	
@@ -72,7 +75,9 @@ public interface GameEngService {
 	 * pre: gameOver() = false
 	 * post: saveLemming(id).getNbSauves() = getNbSauves()@pre +1
 	 * post: saveLemming(id).lemmings() = getLemmings()@pre / getLemming(id)
+	 * post: saveLemming(id).getLemming(id) = null
 	 * post: ∀ n ∈  lemmings().id() / {num}, saveLemming(num).getLemming(n) = getLemming(n)
+	 * post: getTour() = getTour()@pre
 	 */
 	void saveLemming(int id);
 	
@@ -87,6 +92,7 @@ public interface GameEngService {
 	 * post: stopCreation().getTour() = getTour()@pre
 	 * post: stopCreation().getNbSauves() = getNbSauves()@pre
 	 * post: stopCreation().lemmings() = lemmings()@pre
+	 * post: getTour() = getTour()@pre
 	 */
 	void stopCreation();
 }

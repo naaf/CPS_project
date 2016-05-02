@@ -47,6 +47,46 @@ public class LemmingDecorator implements LemmingService {
 		return delegate.getDirection();
 	}
 
+	@Override
+	public int enChute() {
+		return delegate.enChute();
+	}
+
+	@Override
+	public boolean estFlotteur() {
+		return delegate.estFlotteur();
+	}
+
+	@Override
+	public boolean estExploseur() {
+		return delegate.estExploseur();
+	}
+
+	@Override
+	public boolean estGrimpeur() {
+		return delegate.estGrimpeur();
+	}
+
+	@Override
+	public int attenteConstruction() {
+		return delegate.attenteConstruction();
+	}
+
+	@Override
+	public int attenteExplosion() {
+		return delegate.attenteExplosion();
+	}
+
+	@Override
+	public int nbDalle() {
+		return delegate.nbDalle();
+	}
+
+	@Override
+	public int nbCasse() {
+		return delegate.nbCasse();
+	}
+
 	// Operators -----------------------------------------------------------
 	@Override
 	public void setClasseType(ClasseType cl) {

@@ -33,11 +33,17 @@ public class ViewTest {
 		for (int i = 0; i < JoueurView.L_WIDTH; i++) {
 			lc.setNature(i, 0, Nature.METAL);
 			lc.setNature(i, JoueurView.L_HEIGHT - 1, Nature.METAL);
+			
 		}
 		for (int i = 0; i < JoueurView.L_HEIGHT; i++) {
 			lc.setNature(0, i, Nature.METAL);
 			lc.setNature(JoueurView.L_WIDTH - 1, i, Nature.METAL);
 		}
+		for (int i = 1; i < JoueurView.L_WIDTH -1; i++) {
+			lc.setNature(i, 1, Nature.EMPTY);
+			lc.setNature(i, 2, Nature.EMPTY);
+		}
+		
 		lc.setNature(6, 6, Nature.EMPTY);
 		lc.setNature(6, 7, Nature.EMPTY);
 		lc.setNature(6, 8, Nature.EMPTY);
