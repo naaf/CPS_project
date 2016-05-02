@@ -78,4 +78,9 @@ public class LemmingDecorator implements LemmingService {
 		delegate.setExploseur(ex);
 	}
 
+	@Override
+	public void setEstGrimpeur(boolean estGrimpeur) {
+		delegate.setEstGrimpeur(estGrimpeur);
+	}
+
 }

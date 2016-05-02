@@ -70,7 +70,10 @@ public class JoueurImpl implements
 	public void assignerClasse(ClasseType cl, LemmingService l) {
 		if (cl == ClasseType.EXPLOSEUR) {
 			l.setExploseur(true);
-		} else if (cl == ClasseType.FLOTTEUR) {
+		}else if(cl == ClasseType.GRIMPEUR) {
+			l.setEstGrimpeur(true);
+		}
+		else if (cl == ClasseType.FLOTTEUR) {
 			l.setFlotteur(true);
 		} else {
 			l.setClasseType(cl);

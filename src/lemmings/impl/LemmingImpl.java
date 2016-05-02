@@ -19,7 +19,7 @@ public class LemmingImpl implements
 	private static final int ATTENTE_EXPLOSION = 5;
 	private static final int LIMITE_DALLE = 12;
 	private static final int LIMITE_CASSE = 20;
-	
+
 	private GameEngService gEng;
 	private int id;
 	private int x;
@@ -28,12 +28,13 @@ public class LemmingImpl implements
 	private ClasseType classeType;
 	private boolean estFlotteur;
 	private boolean estExploseur;
+	private boolean estGrimpeur;
 	private int enchute;
 	private int attenteConstruction;
 	private int attenteExplosion;
 	private int nbDalle;
 	private int nbCasse;
-	
+
 	private boolean diagB;
 
 	// Constructors -----------------------------------------------------------
@@ -97,10 +98,12 @@ public class LemmingImpl implements
 		nbDalle = 0;
 		nbCasse = 0;
 	}
+
 	@Override
 	public void setFlotteur(boolean flotteur) {
 		estFlotteur = flotteur;
 	}
+
 	@Override
 	public void setExploseur(boolean ex) {
 		estExploseur = ex;
@@ -109,6 +112,11 @@ public class LemmingImpl implements
 	@Override
 	public void changeDirection() {
 		direction = (direction == Direction.DROITE) ? Direction.GAUCHE : Direction.DROITE;
+	}
+
+	@Override
+	public void setEstGrimpeur(boolean estGrimpeur) {
+		this.estGrimpeur = estGrimpeur;
 	}
 
 	@Override
@@ -123,9 +131,6 @@ public class LemmingImpl implements
 			break;
 		case TOMBEUR:
 			tombeur();
-			break;
-		case GRIMPEUR:
-			grimpeur();
 			break;
 		case CONSTRUCTEUR:
 			constructeur();
@@ -147,7 +152,8 @@ public class LemmingImpl implements
 
 		if (estExploseur)
 			exploseur();
-
+		if (estGrimpeur)
+			grimpeur();
 	}
 
 	@Override

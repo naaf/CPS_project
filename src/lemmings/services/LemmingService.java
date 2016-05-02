@@ -57,7 +57,7 @@ public interface LemmingService {
 	void changeDirection();
 	
 	public void setFlotteur(boolean flotteur) ;
-
+	public void setEstGrimpeur(boolean estGrimpeur);
 	void setExploseur(boolean ex);
 	/**
 	 * pre: gameEng().isGameOver() = false

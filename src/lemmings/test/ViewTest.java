@@ -38,8 +38,12 @@ public class ViewTest {
 			lc.setNature(0, i, Nature.METAL);
 			lc.setNature(JoueurView.L_WIDTH - 1, i, Nature.METAL);
 		}
-		lc.setNature(7, 14, Nature.EMPTY);
-		lc.setNature(7, 13, Nature.EMPTY);
+		lc.setNature(6, 6, Nature.EMPTY);
+		lc.setNature(6, 7, Nature.EMPTY);
+		lc.setNature(6, 8, Nature.EMPTY);
+		lc.setNature(5, 6, Nature.EMPTY);
+		lc.setNature(5, 7, Nature.EMPTY);
+		lc.setNature(5, 8, Nature.EMPTY);
 		
 		GameEngContract gc = new GameEngContract(new GameEngImpl());
 		gc.init(lc, 5, 3);
