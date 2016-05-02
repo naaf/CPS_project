@@ -7,10 +7,14 @@ Observators :
 	x : [Lemming] -> int
 	y : [lemming] -> int
 	direction : [Lemming] -> Direction
-	classeLemming : [Lemming]  -> ActivityLemming
-	cumul : [Lemming]  -> ActivityLemming
 	classeType : [Lemming] -> ClasseType
 	enChute : [lemming] -> int
+	estFlotteur : [Lemming] -> boolean
+	estExploseur : [Lemming] -> boolean
+	attenteConstruction : [lemming] -> int
+	attenteExplosion : [lemming] -> int
+	nbDalle : [lemming] -> int
+	nbCasse : [lemming] -> int
 	
 Constructors : 
 	init : GamingEng * int * int -> [GameEng]
@@ -23,15 +27,10 @@ Constructors :
 
 Operators
  	step : [Lemming] -> Lemming
- 		pre: step(l) require ¬GameEng::gameOver(gameEng(L))
-	setClasseLemming : [Lemming] * ClasseType -> Lemming
+	setClasseType : [Lemming] * ClasseType -> Lemming
 	changeDirection : [Lemming] -> Lemming
-	setX : [Lemming] * int -> Lemming
-		pre setX(L, x) require x <= 0 && x < Level::width 
-	setY : [Lemming] * int -> Lemming
-		pre setY(L, y) require y <= 0 && y < Level::height
-	setCumul : [Lemming] * ActivityLemming -> Lemming	
-		pre setCumul(L, cumul) require cumul != null	
+	setFlotteur	: [Lemming] * boolean -> Lemming
+	setExploseur: [Lemming] * boolean -> Lemming
 		
 Observations :
 	

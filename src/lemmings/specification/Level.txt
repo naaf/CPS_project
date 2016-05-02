@@ -6,17 +6,17 @@ Observators:
 	const height:[Level] -> int
 	const width:[Level] -> int
 	editing:[Level] -> bool
+	caseExiste:[Level] * int * int -> bool
 	nature:[Level] * int * int -> Nature
 		pre : nature(L,x,y) require caseExiste(L,x,y)
-	caseExiste:[Level] * int * int -> bool
 	exitX : [Level] -> int    
-		pre onExit(L) require ¬(editing(L))
+		pre exitX(L) require ¬(editing(L))
 	exitY : [Level] -> int    
-		pre onExit(L) require ¬(editing(L))
+		pre exitY(L) require ¬(editing(L))
 	entranceX: [Level] -> int 
-		pre entrance(L) require ¬(editing(L))
+		pre entranceX(L) require ¬(editing(L))
 	entranceY: [Level] -> int 
-        pre entrance(L) require ¬(editing(L))  
+        pre entranceY(L) require ¬(editing(L))  
                  		
 Constructors:      
 	init:int * int -> [Level]

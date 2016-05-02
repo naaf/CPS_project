@@ -54,12 +54,12 @@ Observations :
 		gameOver(G) min= (nbCrees(G) == sizeColony(G)) && (card(lemmings(G)) == 0 ) 
 		score(G) min= nbSauves(G)/sizeColony(G) * 100
 		obstacle(G,x,y) min= ¬(Level::nature(level(G), x,y) = EMPTY)
+		LemmingExiste(G, id) min= (getLemming(G,id) != null)
 		
 	[init]
 		level(init(L, size, speed)) = L
 		sizeColony(init(L, size, speed)) = size
 		spawnSpeed(init(L, size, speed)) = speed
-		gameOver(init(L, size, speed)) = false
 		tour(init(L, size, speed)) = 0
 		nbSauves(init(L, size, speed)) = 0
 		nbCrees(init(L, size, speed)) = 0
@@ -68,14 +68,13 @@ Observations :
 	[supprimeLemming]
 		tour(supprimeLemming(G, id)) = tour(G)@pre
 		nbSauves(supprimeLemming(G, id)) = nbSauves(G)@pre
-		lemmings(supprimeLemming(G, id)) = lemmings(G)@pre /  getLemming(G,id)
-		∀ n ∈ Lemming::id(lemmings()) / {num}, getLemming(supprimeLemming(G,num),n) = getLemming(G,n)
-		
+		lemmings(supprimeLemming(G, id)) = lemmings(G)@pre / getLemming(G,id)
+		getLemming(supprimeLemming(G,id),id) = null
+		∀ n ∈ Lemming::id(lemmings()) / {id},getLemming(supprimeLemming(G,id),n) = getLemming(G,n)
 		
 	[creeLemming]
 		tour(creeLemming(G, id,x,y)) = tour(G)@pre
 		nbSauves(creeLemming(G, id)) = nbSauves(G)@pre
-		nbCrees(creeLemming(G, id)) = nbCrees(G)@pre +1
 		lemmings(creeLemming(G, id,x,y)) = lemmings(G)@pre ⋃ {Lemming::init(G, id,x,y)}
 		if id = n then getLemming(creeLemming(G,id,x,y),n) = Lemming::init(G, id,x,y)
 	 	else getLemming(creeLemming(G,id,x,y),n) = getLemming(G,n)
@@ -85,16 +84,21 @@ Observations :
 		tour(saveLemming(G, id)) = tour(G)@pre
 		nbSauves(saveLemming(G, id)) = nbSauves(G)@pre +1
 		lemmings(saveLemming(G, id)) = lemmings(G)@pre / getLemming(G,id)
+		getLemming(saveLemming(G,id),id) = null
 		∀ n ∈ Lemming::id(lemmings()) / {num}, getLemming(saveLemming(G,num),n) = getLemming(G,n)
 		
 	[runTour]
 		tour(runTour(G)) = tour(G)@pre + 1
-	
+		nbSauves(runTour(G)) = n ∈ {nbSauves(G)@pre, nbSauves(G)@pre +1}
+		lemmings(runTour(G)) = {lemmings(G)@pre || ... || {}}
+		∀ n ∈ Lemming@pre::id(lemmings()), getLemming(runTour(G),n) = getLemming(G,n) si LemmingExiste(G,n)
+		getLemming(supprimeLemming(G),n) = null sinon
+		
 	[stopCreation]
-		nbCrees(stopCreation(G)) = sizeColony
 		tour(stopCreation(G)) = tour(G)@pre
 		nbSauves(stopCreation(G)) = nbSauves(G)@pre
 		lemmings(stopCreation(G)) = lemmings(G)@pre
+		getLemming(stopCreation(G), id) = getLemming(G,id)
 		
 		
 		

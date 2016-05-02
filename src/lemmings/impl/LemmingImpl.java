@@ -19,6 +19,7 @@ public class LemmingImpl implements
 	private static final int ATTENTE_EXPLOSION = 5;
 	private static final int LIMITE_DALLE = 12;
 	private static final int LIMITE_CASSE = 20;
+	
 	private GameEngService gEng;
 	private int id;
 	private int x;
@@ -32,6 +33,7 @@ public class LemmingImpl implements
 	private int attenteExplosion;
 	private int nbDalle;
 	private int nbCasse;
+	
 	private boolean diagB;
 
 	// Constructors -----------------------------------------------------------
@@ -131,7 +133,7 @@ public class LemmingImpl implements
 		case CREUSEUR:
 			creuseur();
 			break;
-		case PELLEUR:
+		case PELLETEUR:
 			pelleteur();
 			break;
 		case MINEUR:
