@@ -124,5 +124,8 @@ public class LemmingImpl implements
 		return lemmingClasse.getTypeClasse();
 	}
 	
+	private void marcheur(){
+		
+	}
 	
 }

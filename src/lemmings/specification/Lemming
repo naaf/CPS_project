@@ -10,6 +10,7 @@ Observators :
 	classeLemming : [Lemming]  -> ActivityLemming
 	cumul : [Lemming]  -> ActivityLemming
 	classeType : [Lemming] -> ClasseType
+	enChute : [lemming] -> int
 	
 Constructors : 
 	init : GamingEng * int * int -> [GameEng]
@@ -37,6 +38,7 @@ Observations :
 	[Invariant]
 		Level::nature(GameEng::level(gameEng(L)), x, y +1) = EMPTY
 		Level::nature(GameEng::level(gameEng(L)), x, y) = EMPTY
+		classeLemming(L) != null
 	
 	[init]
 		x(init(G, i,j)) = i
@@ -46,12 +48,15 @@ Observations :
 		direction(init(G, i,j)) = DROITE
 		classeLemming != null
 		cumul = null
+		enChute = 0
 		
 	[setClasseLemming]
 		x(setClasseLemming(L, T)) = x(L)@pre
 		y(setClasseLemming(L, T)) = y(L)@pre
 		direction(setClasseLemming(L, T)) = direction(L)@pre
 		classeType(setClasseLemming(L, T)) = classeLemming().getClasseType()
+		enChute = 0
+		cumul(L) = cumul(L)@pre
 		
 	[changeDirection]
 		x(changeDirection(L)) = x(L)@pre
@@ -61,10 +66,11 @@ Observations :
 			direction(changeDirection(L)) = DROITE
 		else 
 			direction(changeDirection(L)) = GAUCHE
+		cumul(L) = cumul(L)@pre
 		
 	[step]
 		if classeType(L) = MARCHEUR then :
-			enChute(step(L)) = enChute(L)@pre
+			cumul(L) = cumul(L)@pre
 			if obstacle(L, x(L), y(L)-1)  then :
 				classeType(step(L)) = classeType(L)
 				if obstacle(L, x(L)+1,y(L)+1) || ( obstacle(L, x(L)+1, y(L)) && obstacle(x(L)+1,y(L)+2) ) then :
@@ -83,6 +89,7 @@ Observations :
 				
 				
 		else if classeType(L) = TOMBEUR then :
+			cumul(L) = cumul(L)@pre
 			x(step(L)) = x(L)@pre
 			direction(step(L)) = direction(L)@pre
 			if(obstacle(L, x(L), y(L)-1)) then :
@@ -97,6 +104,7 @@ Observations :
 				
 		else if classeType(L) = CREUSEUR then :
 			x(step(L)) = x(L)@pre
+			cumul(L) = cumul(L)@pre
 			direction(step(L)) = direction(L)@pre
 			if Level::nature(GameEng::level(gameEng(L)), x(L), y(L)-1) = DIRTY
 				y(step(L)) = y(L)@pre +1
@@ -110,7 +118,7 @@ Observations :
 				classeType(step(L)) = TOMBEUR
 	
 		else if (classeType(L) = GRIMPEUR) then :
-			
+			cumul(L) = cumul(L)@pre
 			if obstacle(L,x(L)+1,y(L)) && obstacle(L,x(L)+1,y(L)+1) &&
 				¬obstacle(L, x(L), y(L)+2) then :
 				direction(step(L)) = direction(L)@pre
@@ -126,8 +134,95 @@ Observations :
 					classeType(step(L)) = MARCHEUR
 					y(step(L)) = y(L)@pre +1
 					x(step(L)) = x(L)@pre +1
+					
+		else if (classeType(L) = STOPPEUR) then :
+			cumul(L) = cumul(L)@pre
+			direction(L) = direction@pre	
+			if ¬obstacle(L, x(L), y(L)-1)  then :
+				classeType(step(L)) = TOMBEUR
+			else
+				classeType(step(L)) = STOPPEUR
+			y(L) = y(L)@pre
+			x(L) = x(L)@pre
+			direction(L) = direction(L)@pre
+					
+		else if (classeType(L) = PELLETEUR) then :
+			cumul(L) = cumul(L)@pre
+			if obstacle(L, x(L), y(L)-1)  then :		
+				if Level::nature(GameEng::level(gameEng(L)), x(L), y(L)) = DIRTY &&
+				   Level::nature(GameEng::level(gameEng(L)), x(L), y(L)+1) = DIRTY && 
+				   Level::nature(GameEng::level(gameEng(L)), x(L), y(L)+2) = DIRTY then :
+						classeType(step(L)) = PELLETEUR
+						Level::nature(GameEng::level(gameEng(L)), x(L) +1, y(L)) = EMPTY 
+				  		Level::nature(GameEng::level(gameEng(L)), x(L) +1, y(L)+1) = EMPTY 
+				   		Level::nature(GameEng::level(gameEng(L)), x(L) +1, y(L)+2) = EMPTY
+				else
+					classeType(step(L)) = MARCHEUR
+			else
+				classeType(step(L)) = TOMBEUR	
 				
+		else if (classeType(L) = EXPLOSEUR) then :
+			cumul(L) = EXPLOSEUR
+			classeType(step(L)) = classeType(L)@pre
+			if GameEng::tour(gameEng(L)) = GameEng::tour(gameEng(L))@pre + 5
+				L ∉ GameEng::lemmings(gameEng(L))
+				∀(x,y) x ∈ { x(L)-2, ..., x(L)+2} et y ∈ { y(L)-1, ..., y(L)+1}
+					if Level::nature(GameEng::level(gameEng(L)), x, y) != METAL
+						Level::nature(GameEng::level(gameEng(L)), x, y) = EMPTY
+					else
+						Level::nature(GameEng::level(gameEng(L)), x, y) = METAL
+				∀ l ∈ gameEng::lemmings(gameEng(L))
+					if Lemming::x(l) = x && Lemming::y(l) = y then
+						l ∉ GameEng::lemmings(gameEng(L))
+					else
+						l ∈  GameEng::lemmings(gameEng(L))
+					
+		else if (classeType(L) = FLOTTEUR) then :
+			cumul(L) = FLOTTEUR
+			classeType(step(L)) = classeType(L)@pre
+			direction(step(L)) = direction(L)@pre
+			y(L) = y(L)@pre
+			x(L) = x(L)@pre
+		
+		else if (classeType(L) = CONSTRUTEUR) then :
+			cumul(L) = cumul(L)@pre
+			if obstacle(L, x(L), y(L)-1)  then :
+			∀(x,y) ∈ {(x(L)+1, y(L)),(x(L)+2, y(L)),(x(L)+3, y(L)),(x(L)+1, y(L)+1),(x(L)+2, y(L)+1),(x(L)+2, y(L)+2)}
+				if Level::nature(GameEng::level(gameEng(L)), x, y) = EMPTY then :
+				   		Level::nature(GameEng::level(gameEng(L)), x(L)+2, y(L)) = DIRTY 
+				  		Level::nature(GameEng::level(gameEng(L)), x(L)+3, y(L)) = DIRTY 
+			   		    Level::nature(GameEng::level(gameEng(L)), x(L)+1, y(L)+1) = DIRTY
+				   		x(L) = x(L)@pre +1
+				   		y(L) = y(L)@pre +1
+						classeType(step(L)) = CONSTRUCTEUR
+				else
+					classeType(step(L)) = MARCHEUR
+			else
+				classeType(step(L)) = TOMBEUR
 				
-				
-				
-				
+		else if (classeType(L) = MINEUR) then :
+			cumul(L) = cumul(L)@pre
+			if obstacle(L, x(L), y(L)-1)  then :
+				if ¬obstacle(L, x(L)+1, y(L)) &&  
+					Level::nature(GameEng::level(gameEng(L)), x(L)+1, y(L)+1) != METAL &&
+					Level::nature(GameEng::level(gameEng(L)), x(L)+1, y(L)+2) != METAL then :
+						classeType(L) = MINEUR
+						Level::nature(GameEng::level(gameEng(L)), x(L)+1, y(L)+1) = EMPTY
+						Level::nature(GameEng::level(gameEng(L)), x(L)+1, y(L)+2) = EMPTY
+						y(L) = y(L)@pre +1
+						x(L) = x(L)@pre +1
+				else
+					if Level::nature(GameEng::level(gameEng(L)), x(L)+1, y(L)) != METAL &&
+						Level::nature(GameEng::level(gameEng(L)), x(L)+1, y(L)-1) != METAL
+						classeType(L) = MINEUR
+						Level::nature(GameEng::level(gameEng(L)), x(L)+1, y(L)) = EMPTY 
+						Level::nature(GameEng::level(gameEng(L)), x(L)+1, y(L)-1) = EMPTY
+						y(L) = y(L)@pre +1
+						x(L) = x(L)@pre -1
+						
+					else
+						classeType(step(L)) = MARCHEUR
+			else
+				classeType(step(L)) = TOMBEUR
+		
+			

@@ -206,6 +206,9 @@ public class LemmingContract extends LemmingDecorator {
 	@Override
 	public void step() {
 		// pre
+		if (getClasseLemming() == null) {
+			Contractor.defaultContractor().preconditionError(SERVICE, "step", "getClasseLemming = null");
+		}
 		// inv pre
 		checkInvariant();
 		// run
