@@ -1,7 +1,5 @@
 package lemmings.services;
 
-import java.util.Optional;
-
 public interface LemmingService {
 	// Observators ---------------------------------------------------------
 	GameEngService gameEng();
@@ -10,8 +8,7 @@ public interface LemmingService {
 	int getId();
 	Direction getDirection();
 	ClasseType getClasseType();
-	ActivityLemming getClasseLemming();
-	Optional<ActivityLemming> getCumul();
+
 	
 	// Invariants ----------------------------------------------------------
 	/**
@@ -38,23 +35,7 @@ public interface LemmingService {
 	
 	// Operators -----------------------------------------------------------
 	
-	/**
-	 * pre: 0<= x && x < gameEng().getLevel().getWidh()
-	 * post: setX(x).getX() = x
-	 */
-	void setX(int x);
 	
-	/**
-	 * pre: 0<= y && x < gameEng().getLevel().getHeight()
-	 * post: setY(y).getY() = y
-	 */
-	void setY(int y);
-	
-	/**
-	 * pre: cumulActivity != null
-	 * post: setCumul(cumulActivity).getCumul() = cumulActivity
-	 */
-	void setCumul(ActivityLemming cumulActivity);
 	
 	/**
 	 * post: setClasseLemming(activityLemming).getClasseType = activityLemming.getClasseType()
@@ -63,7 +44,7 @@ public interface LemmingService {
 	 * post: setClasseLemming(activityLemming).getY() = getY()@pre
 	 * post: setClasseLemming(activityLemming).getDirection() = getDirection()@pre
 	 */
-	void setClasseLemming(ActivityLemming activityLemming);
+	void setClasseType(ClasseType classeType);
 	
 	/**
 	 * post: if getDirection = GAUCHE then 

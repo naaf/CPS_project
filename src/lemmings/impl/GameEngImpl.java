@@ -71,7 +71,7 @@ public class GameEngImpl implements
 	@Override
 	public boolean isObstacle(int x, int y) {
 		return level.getNature(x, y) != Nature.EMPTY || lemmings().stream()
-				.filter(l -> l.getX() == x && l.getY() == y && l.getClasseLemming().getTypeClasse() == ClasseType.STOPPEUR)
+				.filter(l -> l.getX() == x && l.getY() == y && l.getClasseType() == ClasseType.STOPPEUR)
 				.findFirst().isPresent();
 	}
 

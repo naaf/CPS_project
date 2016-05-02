@@ -38,17 +38,7 @@ public interface JoueurService {
 	 * 		else getJetons(t) = getJetons(t)@pre
 	 * post: l.getClasseLemming() = activity
 	 */
-	void assignerClasse(ActivityLemming activity, LemmingService lm);
-	
-	/**
-	 * pre: getJetons(activity) > 0
-	 * pre: getGameEng().lemmingExiste(lm.getId())
-	 * post: ∀ t ∈ classeTypes(),
-	 * 		if( t == activity.getClasseType() ) getJetons(t) = getJetons(t)@pre -1
-	 * 		else getJetons(t) = getJetons(t)@pre
-	 * post: l.getCumul() = activity
-	 */
-	void assignerCumul(ActivityLemming activity, LemmingService lm);
+	void assignerClasse(ClasseType ct, LemmingService lm);
 
 	/**
 	 * post: ∀ ct ∈ getClasseTypes(); getJetons(ct) = getNbJetons()

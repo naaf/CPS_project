@@ -6,12 +6,12 @@ import lemmings.services.LemmingService;
 import lemmings.services.Nature;
 
 public class LemmingExploseur implements ActivityLemming {
-	private static final int ATTENTE_TOUR = 5;
-	private int attente;
+	private static final int ATTENTE_EXPLOSION = 5;
+	private int attenteExplosion;
 
 	@Override
 	public void step(LemmingService lm) {
-		if (attente == ATTENTE_TOUR) {
+		if (attenteExplosion == ATTENTE_EXPLOSION) {
 			int x = lm.getX(), y = lm.getY();
 			for (int i = -1; i < 2; i++) {
 				for (int j = -2; j < 3; j++) {
@@ -26,7 +26,7 @@ public class LemmingExploseur implements ActivityLemming {
 						.forEach(l -> lm.gameEng().supprimeLemming(l.getId()));
 			}
 		}
-		attente++;
+		attenteExplosion++;
 	}
 
 	@Override

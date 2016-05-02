@@ -46,7 +46,7 @@ public class JoueurDecorator implements JoueurService {
 
 	// Operators -----------------------------------------------------------
 	@Override
-	public void assignerClasse(ActivityLemming ct, LemmingService l) {
+	public void assignerClasse(ClasseType ct, LemmingService l) {
 		delegate.assignerClasse(ct, l);
 	}
 
@@ -64,11 +64,4 @@ public class JoueurDecorator implements JoueurService {
 	public void annihilation() {
 		delegate.annihilation();
 	}
-
-	@Override
-	public void assignerCumul(ActivityLemming activity, LemmingService lm) {
-		delegate.assignerCumul(activity, lm);
-		
-	}
-
 }

@@ -22,17 +22,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import lemmings.contracts.JoueurContract;
-import lemmings.impl.LemmingConstructeur;
-import lemmings.impl.LemmingCreuseur;
-import lemmings.impl.LemmingExploseur;
-import lemmings.impl.LemmingFlotteur;
-import lemmings.impl.LemmingGrimpeur;
-import lemmings.impl.LemmingMarcheur;
-import lemmings.impl.LemmingMineur;
-import lemmings.impl.LemmingPelleur;
-import lemmings.impl.LemmingStoppeur;
-import lemmings.impl.LemmingTombeur;
-import lemmings.services.ActivityLemming;
 import lemmings.services.ClasseType;
 import lemmings.services.GameEngService;
 import lemmings.services.LemmingService;
@@ -112,11 +101,7 @@ public class JoueurView {
 							.filter(l -> l.getX() == e.getX() / CASE && l.getY() == e.getY() / CASE).findFirst().get();
 					System.out.println("trouveLemming");
 					currentSelected.ifPresent(ct -> {
-						if (ct == ClasseType.EXPLOSEUR || ct == ClasseType.FLOTTEUR) {
-							jc.assignerCumul(getActivity(ct), lm);
-						} else {
-							jc.assignerClasse(getActivity(ct), lm);
-						}
+						jc.assignerClasse(ct, lm);
 						btns.get(ct).setText(ct.toString() + " " + jc.getJetons(ct));
 
 					});
@@ -141,34 +126,6 @@ public class JoueurView {
 		envFrame.setResizable(false);
 		envFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		envFrame.setVisible(true);
-	}
-
-	private ActivityLemming getActivity(ClasseType ct) {
-		switch (ct) {
-		case TOMBEUR:
-			return new LemmingTombeur();
-		case MARCHEUR:
-			return new LemmingMarcheur();
-		case CREUSEUR:
-			return new LemmingCreuseur();
-		case GRIMPEUR:
-			return new LemmingGrimpeur();
-		case CONSTRUCTEUR:
-			return new LemmingConstructeur();
-		case STOPPEUR:
-			return new LemmingStoppeur();
-		case EXPLOSEUR:
-			return new LemmingExploseur();
-		case FLOTTEUR:
-			return new LemmingFlotteur();
-		case MINEUR:
-			return new LemmingMineur();
-		case PELLEUR:
-			return new LemmingPelleur();
-
-		}
-		return null;
-
 	}
 
 	public void repain() {

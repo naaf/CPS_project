@@ -68,17 +68,12 @@ public class JoueurImpl implements
 
 	// Operators -----------------------------------------------------------
 	@Override
-	public void assignerClasse(ActivityLemming cl, LemmingService l) {
-		l.setClasseLemming(cl);
-		classeTypes.computeIfPresent(cl.getTypeClasse(), (k, v) -> v - 1);
+	public void assignerClasse(ClasseType cl, LemmingService l) {
+		l.setClasseType(cl);
+		classeTypes.computeIfPresent(cl, (k, v) -> v - 1);
 	}
 
-	@Override
-	public void assignerCumul(ActivityLemming activity, LemmingService lm) {
-		lm.setCumul(activity);
-		classeTypes.computeIfPresent(activity.getTypeClasse(), (k, v) -> v - 1);
-	}
-
+	
 	@Override
 	public void reset() {
 		LevelService l = gameEng.getLevel();
@@ -114,7 +109,7 @@ public class JoueurImpl implements
 	public void annihilation() {
 		gameEng.stopCreation();
 		gameEng.lemmings().forEach(l -> {
-			assignerClasse(new LemmingExploseur(), l);
+			assignerClasse(ClasseType.EXPLOSEUR, l);
 		});
 	}
 
