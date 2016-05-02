@@ -20,7 +20,7 @@ public class LemmingDecorator implements LemmingService {
 	public void init(GameEngService ges, int id, int x, int y) {
 		delegate.init(ges, id, x, y);
 	}
-	
+
 	// Observators ---------------------------------------------------------
 	@Override
 	public GameEngService gameEng() {
@@ -47,8 +47,6 @@ public class LemmingDecorator implements LemmingService {
 		return delegate.getDirection();
 	}
 
-
-
 	// Operators -----------------------------------------------------------
 	@Override
 	public void setClasseType(ClasseType cl) {
@@ -69,9 +67,15 @@ public class LemmingDecorator implements LemmingService {
 	public ClasseType getClasseType() {
 		return delegate.getClasseType();
 	}
-	
-	
-	
 
-	
+	@Override
+	public void setFlotteur(boolean flotteur) {
+		delegate.setFlotteur(flotteur);
+	}
+
+	@Override
+	public void setExploseur(boolean ex) {
+		delegate.setExploseur(ex);
+	}
+
 }

@@ -2,7 +2,6 @@ package lemmings.decorators;
 
 import java.util.HashMap;
 
-import lemmings.services.ActivityLemming;
 import lemmings.services.ClasseType;
 import lemmings.services.GameEngService;
 import lemmings.services.JoueurService;

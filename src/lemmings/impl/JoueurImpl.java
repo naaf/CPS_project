@@ -2,7 +2,6 @@ package lemmings.impl;
 
 import java.util.HashMap;
 
-import lemmings.services.ActivityLemming;
 import lemmings.services.ClasseType;
 import lemmings.services.GameEngService;
 import lemmings.services.JoueurService;
@@ -69,11 +68,16 @@ public class JoueurImpl implements
 	// Operators -----------------------------------------------------------
 	@Override
 	public void assignerClasse(ClasseType cl, LemmingService l) {
-		l.setClasseType(cl);
+		if (cl == ClasseType.EXPLOSEUR) {
+			l.setExploseur(true);
+		} else if (cl == ClasseType.FLOTTEUR) {
+			l.setFlotteur(true);
+		} else {
+			l.setClasseType(cl);
+		}
 		classeTypes.computeIfPresent(cl, (k, v) -> v - 1);
 	}
 
-	
 	@Override
 	public void reset() {
 		LevelService l = gameEng.getLevel();

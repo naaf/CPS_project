@@ -1,8 +1,5 @@
 package lemmings.impl;
 
-import java.util.Optional;
-
-import lemmings.services.ActivityLemming;
 import lemmings.services.ClasseType;
 import lemmings.services.Direction;
 import lemmings.services.GameEngService;
@@ -26,11 +23,11 @@ public class LemmingImpl implements
 	private int id;
 	private int x;
 	private int y;
-	private int enchute;
 	private Direction direction;
 	private ClasseType classeType;
 	private boolean estFlotteur;
 	private boolean estExploseur;
+	private int enchute;
 	private int attenteConstruction;
 	private int attenteExplosion;
 	private int nbDalle;
@@ -49,6 +46,11 @@ public class LemmingImpl implements
 		this.direction = Direction.DROITE;
 		this.classeType = ClasseType.MARCHEUR;
 		bindServiceGameEng(ges);
+		attenteConstruction = 0;
+		attenteExplosion = 0;
+		enchute = 0;
+		nbDalle = 0;
+		nbCasse = 0;
 	}
 
 	@Override
@@ -87,7 +89,19 @@ public class LemmingImpl implements
 	@Override
 	public void setClasseType(ClasseType classeType) {
 		this.classeType = classeType;
+		attenteConstruction = 0;
+		attenteExplosion = 0;
 		enchute = 0;
+		nbDalle = 0;
+		nbCasse = 0;
+	}
+	@Override
+	public void setFlotteur(boolean flotteur) {
+		estFlotteur = flotteur;
+	}
+	@Override
+	public void setExploseur(boolean ex) {
+		estExploseur = ex;
 	}
 
 	@Override
@@ -101,24 +115,39 @@ public class LemmingImpl implements
 			gEng.saveLemming(id);
 			return;
 		}
-		switch(classeType){
-		case MARCHEUR: marcheur();break;
-		case TOMBEUR: tombeur(); break;
-		case GRIMPEUR: grimpeur();break;
-		case CONSTRUCTEUR:constructeur();break;
-		case CREUSEUR : creuseur();break;
-		case PELLEUR : pelleteur(); break;
-		case MINEUR : mineur(); break;
+		switch (classeType) {
+		case MARCHEUR:
+			marcheur();
+			break;
+		case TOMBEUR:
+			tombeur();
+			break;
+		case GRIMPEUR:
+			grimpeur();
+			break;
+		case CONSTRUCTEUR:
+			constructeur();
+			break;
+		case CREUSEUR:
+			creuseur();
+			break;
+		case PELLEUR:
+			pelleteur();
+			break;
+		case MINEUR:
+			mineur();
+			break;
+		case STOPPEUR:
+			break;
 		default:
 			break;
 		}
-		
-		if(estExploseur)
+
+		if (estExploseur)
 			exploseur();
 
 	}
 
-	
 	@Override
 	public ClasseType getClasseType() {
 		return this.classeType;
@@ -191,7 +220,7 @@ public class LemmingImpl implements
 						gameEng().getLevel().remove(getX() + i, getY() + 1);
 					}
 				}
-				y = y +1;
+				y = y + 1;
 			}
 		} else {
 			setClasseType(ClasseType.TOMBEUR);
@@ -225,7 +254,7 @@ public class LemmingImpl implements
 					gameEng().getLevel().build(getX() + i * sens, getY());
 				}
 				y = y - 1;
-				x = x + 2 *sens;
+				x = x + 2 * sens;
 				nbDalle += 3;
 				attenteConstruction = 0;
 			}
@@ -266,7 +295,7 @@ public class LemmingImpl implements
 			for (int i = 0; i > -3; i--) {
 				gameEng().getLevel().remove(getX() + sens, getY() + i);
 			}
-			x = x +sens;
+			x = x + sens;
 			nbCasse += 3;
 
 		} else {
@@ -283,9 +312,8 @@ public class LemmingImpl implements
 				|| gameEng().getLevel().getNature(getX() + sens, getY() - 2) == Nature.METAL) {
 			return false;
 		}
-		if (gameEng().lemmings().stream()
-				.anyMatch(l -> (l.getX() == getX() + sens) && (l.getY() == getY() - 1 || l.getY() == getY() - 2)
-						&& l.getClasseType() == ClasseType.STOPPEUR)) {
+		if (gameEng().lemmings().stream().anyMatch(l -> (l.getX() == getX() + sens)
+				&& (l.getY() == getY() - 1 || l.getY() == getY() - 2) && l.getClasseType() == ClasseType.STOPPEUR)) {
 			return false;
 		}
 		return true;
@@ -297,8 +325,8 @@ public class LemmingImpl implements
 				|| gameEng().getLevel().getNature(getX() + sens, getY() + 1) == Nature.METAL) {
 			return false;
 		}
-		if (gameEng().lemmings().stream().anyMatch(l -> (l.getX() == getX() + sens) && l.getY() == getY()
-				&& l.getClasseType() == ClasseType.STOPPEUR)) {
+		if (gameEng().lemmings().stream().anyMatch(
+				l -> (l.getX() == getX() + sens) && l.getY() == getY() && l.getClasseType() == ClasseType.STOPPEUR)) {
 			return false;
 		}
 		return true;
@@ -314,7 +342,7 @@ public class LemmingImpl implements
 				if (gameEng().isObstacle(getX() + sens, getY() - 2)) {
 					gameEng().getLevel().remove(getX() + sens, getY() - 2);
 				}
-				x+=sens;
+				x += sens;
 				y--;
 			} else if (diagB()) {
 				if (gameEng().isObstacle(getX() + sens, getY())) {
@@ -323,7 +351,7 @@ public class LemmingImpl implements
 				if (gameEng().isObstacle(getX() + sens, getY() + 1)) {
 					gameEng().getLevel().remove(getX() + sens, getY() + 1);
 				}
-				x+=sens;
+				x += sens;
 				y++;
 				this.diagB = true;
 
