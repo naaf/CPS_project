@@ -15,6 +15,7 @@ public class ViewTest {
 		/** Level initialisation **/
 		LevelContract lc = new LevelContract(new LevelImpl());
 		lc.init(JoueurView.L_WIDTH, JoueurView.L_HEIGHT);
+//		lc.init(-10, -10);
 		// 
 		for (int i = 0; i < JoueurView.L_WIDTH; i++) {
 			lc.setNature(i, 6, Nature.DIRTY); 

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="13.1">
-  <zoom_level>10</zoom_level>
+  <zoom_level>9</zoom_level>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>1030</x>
-      <y>220</y>
-      <w>200</w>
-      <h>100</h>
+      <x>1017</x>
+      <y>234</y>
+      <w>180</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>symbol=component
 Level</panel_attributes>
@@ -16,10 +16,10 @@ Level</panel_attributes>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>200</x>
-      <y>220</y>
-      <w>200</w>
-      <h>100</h>
+      <x>270</x>
+      <y>234</y>
+      <w>180</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>symbol=component
 Lemming</panel_attributes>
@@ -28,10 +28,10 @@ Lemming</panel_attributes>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>690</x>
-      <y>320</y>
-      <w>200</w>
-      <h>100</h>
+      <x>711</x>
+      <y>324</y>
+      <w>180</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>symbol=component
 GameEng</panel_attributes>
@@ -40,10 +40,10 @@ GameEng</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>970</x>
-      <y>310</y>
-      <w>180</w>
-      <h>100</h>
+      <x>963</x>
+      <y>315</y>
+      <w>162</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>lt=()-
 LevelService</panel_attributes>
@@ -52,22 +52,22 @@ LevelService</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>390</x>
-      <y>240</y>
-      <w>200</w>
-      <h>50</h>
+      <x>441</x>
+      <y>252</y>
+      <w>171</w>
+      <h>36</h>
     </coordinates>
-    <panel_attributes>lt=)-
-</panel_attributes>
+    <panel_attributes>lt=()-
+LemmingService</panel_attributes>
     <additional_attributes>170.0;20.0;10.0;20.0</additional_attributes>
   </element>
   <element>
     <id>UMLGeneric</id>
     <coordinates>
-      <x>350</x>
-      <y>470</y>
-      <w>200</w>
-      <h>100</h>
+      <x>405</x>
+      <y>459</y>
+      <w>180</w>
+      <h>90</h>
     </coordinates>
     <panel_attributes>symbol=component
 Joueur</panel_attributes>
@@ -76,26 +76,10 @@ Joueur</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>740</x>
-      <y>410</y>
-      <w>80</w>
-      <h>130</h>
-    </coordinates>
-    <panel_attributes>lt=()-
-
-
-
-
-runTour</panel_attributes>
-    <additional_attributes>10.0;80.0;10.0;10.0;10.0;80.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>880</x>
-      <y>370</y>
-      <w>110</w>
-      <h>50</h>
+      <x>882</x>
+      <y>369</y>
+      <w>99</w>
+      <h>45</h>
     </coordinates>
     <panel_attributes>lt=)-</panel_attributes>
     <additional_attributes>80.0;20.0;10.0;20.0</additional_attributes>
@@ -103,22 +87,22 @@ runTour</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>580</x>
-      <y>250</y>
-      <w>130</w>
-      <h>110</h>
+      <x>603</x>
+      <y>252</y>
+      <w>126</w>
+      <h>108</h>
     </coordinates>
-    <panel_attributes>lt=()-
-GameEngService</panel_attributes>
-    <additional_attributes>10.0;10.0;110.0;90.0</additional_attributes>
+    <panel_attributes>lt=)-
+</panel_attributes>
+    <additional_attributes>20.0;20.0;120.0;100.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>540</x>
+      <x>576</x>
       <y>360</y>
-      <w>170</w>
-      <h>40</h>
+      <w>153</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>lt=()-
 GameEngService</panel_attributes>
@@ -127,10 +111,10 @@ GameEngService</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>480</x>
-      <y>380</y>
-      <w>100</w>
-      <h>110</h>
+      <x>522</x>
+      <y>378</y>
+      <w>90</w>
+      <h>99</h>
     </coordinates>
     <panel_attributes>lt=)-
 </panel_attributes>
@@ -139,13 +123,13 @@ GameEngService</panel_attributes>
   <element>
     <type>com.baselet.element.old.element.Relation</type>
     <coordinates>
-      <x>350</x>
-      <y>540</y>
-      <w>90</w>
-      <h>130</h>
+      <x>396</x>
+      <y>522</y>
+      <w>100</w>
+      <h>116</h>
     </coordinates>
     <panel_attributes>lt=&lt;()
-r1= StartGame</panel_attributes>
-    <additional_attributes>50;110;50;30</additional_attributes>
+r1= JoueurService</panel_attributes>
+    <additional_attributes>54;99;54;27</additional_attributes>
   </element>
 </diagram>
